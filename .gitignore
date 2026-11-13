@@ -1,0 +1,6 @@
+# Source question library (not needed for the site)
+Danh sach cau hoi*/
+*.rar
+*.docx
+__pycache__/
+.vercel

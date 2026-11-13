@@ -1,0 +1,292 @@
+{
+ "fund-1": {
+  "e": "Private IPv4 phù hợp khi không gian địa chỉ public hạn chế và traffic của subnet chỉ lưu thông nội bộ trong tổ chức. Subnet cần đi qua VPN tới tổ chức khác hoặc được quảng bá ra Internet thì cần địa chỉ unique/public (hoặc NAT). Việc giảm broadcast không liên quan đến loại địa chỉ."
+ },
+ "fund-2": {
+  "e": "Trong môi trường ảo hóa, các VM kết nối mạng qua software switch (virtual switch) chạy trên hypervisor, và hypervisor này mới nối vật lý vào mạng bằng card mạng/uplink. Không có kết nối wireless hay AP ảo như các đáp án nhiễu, và VM không cắm cáp trực tiếp vào switch vật lý."
+ },
+ "fund-3": {
+  "e": "Đường T1 (DS1) có tốc độ tối đa 1.544 Mbps. 2.048 Mbps là E1 (chuẩn châu Âu), 34.368 Mbps là E3 và 44.736 Mbps là T3."
+ },
+ "fund-4": {
+  "e": "Mạng SOHO có quy mô nhỏ, thường dùng một router/thiết bị đa năng cho phép nhiều người dùng chia sẻ chung một đường broadband. Full mesh giữa các switch, hàng nghìn người dùng hoặc kiến trúc ba lớp là đặc điểm của mạng campus/doanh nghiệp lớn."
+ },
+ "fund-5": {
+  "e": "Các VM trên cùng một server vật lý chia sẻ tài nguyên phần cứng của host (CPU, RAM, disk, NIC) thông qua hypervisor. Mỗi VM có OS, ứng dụng và file cấu hình riêng nên các thành phần này không dùng chung."
+ },
+ "fund-6": {
+  "e": "Point-to-point là topology WAN đơn giản nhất, dùng một đường dành riêng giữa hai site nên có chất lượng và độ sẵn sàng tốt, dễ triển khai. Hub-and-spoke và mesh phức tạp hơn; full mesh đáng tin cậy nhất nhưng đắt và phức tạp."
+ },
+ "fund-7": {
+  "e": "Địa chỉ private có thể dùng tự do mà không cần đăng ký hay theo dõi với IANA/RIR, vì không được route trên Internet. Chúng không đi kèm ASN, không traverse Internet chỉ nhờ ACL, và không bị giới hạn 65,536 địa chỉ (10.0.0.0/8 có hơn 16 triệu)."
+ },
+ "fund-8": {
+  "e": "VM là các instance hệ điều hành tách rời (decoupled) khỏi phần cứng server vật lý, chạy trên lớp hypervisor. Hypervisor mới là thành phần quản lý và cấp phát tài nguyên host; VM không phải phần cứng, và một server vật lý có thể chạy nhiều OS cùng lúc."
+ },
+ "fund-9": {
+  "e": "Server virtualization (hypervisor) cho phép nhiều hệ điều hành chạy trên cùng một máy chủ vật lý. VDC phân vùng một thiết bị mạng Nexus, VRF tách bảng định tuyến, còn 'network port ID visualization' không phải công nghệ liên quan."
+ },
+ "fund-10": {
+  "e": "Mô hình cloud cung cấp dịch vụ qua triển khai public, private hoặc hybrid cloud. Nó không dựa vào workstation vật lý chia sẻ tài nguyên, không chỉ truy cập bằng wireless, và không phải là hạ tầng onsite L2/L3 truyền thống."
+ },
+ "fund-11": {
+  "e": "RFC 1918 định nghĩa không gian private để bảo tồn (conserve) địa chỉ public IPv4 đang cạn kiệt. NAT ra đời để hỗ trợ việc dùng chúng, không phải lý do định nghĩa RFC 1918; nó cũng không liên quan đến IPv6 và thực tế còn gây trùng địa chỉ giữa các mạng."
+ },
+ "fund-12": {
+  "e": "Khi forward, router giữ nguyên source/destination IP nhưng viết lại header Layer 2: source MAC thành MAC interface gửi của router và destination MAC thành MAC của next hop (hoặc đích). Router không thay đổi IP address hay dùng 'label' như MPLS trong forwarding thông thường."
+ },
+ "fund-13": {
+  "e": "Distribution layer là điểm tập hợp (aggregation) các access switch và là ranh giới giữa Layer 2 và Layer 3 (inter-VLAN routing, policy). Backbone/uptime liên tục là vai trò của core layer, còn kết nối máy in/endpoint thuộc access layer."
+ },
+ "fund-14": {
+  "e": "TCP là connection-oriented: thiết lập kết nối (three-way handshake) trước khi truyền và đảm bảo delivery bằng ACK/retransmit. UDP là connectionless, truyền nhanh, không đảm bảo gửi tới nơi và không retransmit."
+ },
+ "fund-15": {
+  "e": "Endpoint (PC, laptop, điện thoại, IoT) là thiết bị đầu cuối của người dùng; nếu bị xâm nhập chúng trở thành mối đe dọa đối với mạng. Các chức năng inter-VLAN, routing hay enforce policy toàn campus thuộc thiết bị mạng như router/L3 switch/firewall."
+ },
+ "fund-16": {
+  "e": "Cat 5e và Cat 6a đều hỗ trợ chiều dài tối đa 100 m cho segment Ethernet và đều đạt tối thiểu 1 Gbps. Chỉ Cat 6a hỗ trợ 10 Gbps ở 100 m và hoạt động 500 MHz (Cat 5e là 100 MHz), nên các đáp án đó không phải điểm giống nhau."
+ },
+ "fund-17": {
+  "e": "1000BASE-LX (fiber) và 1000BASE-T (copper) đều là Ethernet nên dùng cùng định dạng header và trailer của data link (Ethernet frame). Chúng khác nhau ở môi trường vật lý: LX dùng đầu nối fiber (LC), T dùng RJ-45, và khoảng cách cũng khác."
+ },
+ "fund-18": {
+  "e": "Collapsed core gộp core và distribution thành một lớp, giảm số thiết bị và chi phí nên phù hợp tổ chức nhỏ cần tiết kiệm. Tổ chức lớn, cần scale mạnh hoặc giảm tối đa downtime nên dùng kiến trúc three-tier."
+ },
+ "fund-19": {
+  "e": "Private IPv4 phù hợp cho các host chỉ giao tiếp với host nội bộ khác, vì địa chỉ này không được route trên Internet. Interface public của firewall hoặc host cần giao tiếp hai chiều với bên ngoài cần địa chỉ public (hoặc NAT)."
+ },
+ "fund-20": {
+  "e": "Interface en0 có địa chỉ 10.8.138.14 với netmask 0xffffe000 = 255.255.224.0, tức /19 (block size 32 ở octet thứ ba). 138 nằm trong khối 128-159 nên subnet là 10.8.128.0/19 (broadcast 10.8.159.255)."
+ },
+ "fund-21": {
+  "e": "Hai đầu link dùng transceiver khác loại: SiteA dùng SFP-SR (multimode, tầm ngắn) còn SiteB dùng SFP-LR (single-mode, tầm xa), trong khi đường cáp là single-mode. Transceiver SR không khớp với LR/single-mode gây tín hiệu quang không ổn định và kết nối chập chờn. Không có lỗi vật lý nào trong counters và tải thấp nên không phải latency do traffic hay lỗi cáp."
+ },
+ "fund-22": {
+  "e": "Địa chỉ private dùng được mà không cần đăng ký hay theo dõi với IANA/RIR. Chúng không đi kèm ASN, không traverse Internet nhờ ACL, và không giới hạn 65,536 địa chỉ (10.0.0.0/8 có hơn 16 triệu)."
+ },
+ "fund-23": {
+  "e": "Endpoint là thiết bị đầu cuối mà người dùng dùng trực tiếp để tạo, ghi và gửi dữ liệu (ví dụ lưu file lên file server). Kết nối thiết bị là chức năng của switch, wireless là của AP, còn forward giữa các VLAN là của router/L3 switch.",
+  "warn": "Key đề gốc (endpoint ghi dữ liệu) khá mơ hồ; endpoint nói chung là thiết bị người dùng cuối."
+ },
+ "fund-24": {
+  "e": "STP có lớp bọc chống nhiễu (shielded) nên bảo vệ trước EMI và crosstalk tốt hơn, còn UTP không có lớp che chắn này. UTP rẻ hơn và dễ lắp đặt hơn STP, nên các đáp án nói ngược lại đều sai."
+ },
+ "fund-25": {
+  "e": "Full mesh có độ tin cậy cao nhất vì mỗi site nối trực tiếp tới mọi site khác nên có nhiều đường dự phòng (đổi lại chi phí cao và phức tạp). Router-on-a-stick là kỹ thuật inter-VLAN, không phải WAN topology; point-to-point và hub-and-spoke có điểm lỗi đơn."
+ },
+ "fund-26": {
+  "e": "Người dùng bên ngoài truy cập tài nguyên public cloud qua Internet nên không cần đường WAN riêng hay đặt cùng data center. Public cloud cũng chạy trên hạ tầng ảo hóa, không chỉ trên server vật lý."
+ },
+ "fund-27": {
+  "e": "Collapsed core phù hợp mạng nhỏ, ít có nhu cầu mở rộng vì gộp core và distribution làm một để tiết kiệm chi phí. Mạng lớn nhiều site nên dùng three-tier; gộp access và distribution không phải định nghĩa của collapsed core và không chỉ dùng với VSS."
+ },
+ "fund-28": {
+  "e": "1000BASE-LX/LH hỗ trợ khoảng cách tới khoảng 10 km, còn 1000BASE-ZX đi được tới khoảng 70 km (single-mode). Các đáp án 1000 km hay yêu cầu multimode cho ZX đều sai."
+ },
+ "fund-29": {
+  "e": "PC_A và PC_B cùng VLAN 200 trên một switch, nên switch chỉ chuyển tiếp frame ở Layer 2 mà không sửa header. Source và destination MAC giữ nguyên; switch không viết lại MAC, và sau lần giao tiếp đầu (ARP) đích đã biết nên không flood bằng ffff.ffff.ffff."
+ },
+ "fund-30": {
+  "e": "Collapsed core gộp core và distribution thành một lớp duy nhất, còn access layer vẫn riêng. WAN không phải một lớp trong mô hình này."
+ },
+ "fund-31": {
+  "e": "Trong ipconfig /all, yêu cầu phân giải tên www.cisco.com được gửi tới DNS server đã cấu hình, là 192.168.1.253. 192.168.1.100 là default gateway, 192.168.1.254 là DHCP server và 192.168.1.226 là IP của chính PC."
+ },
+ "fund-32": {
+  "e": "Endpoint là thiết bị mà người dùng trực tiếp dùng để truy cập dịch vụ mạng (PC, điện thoại, laptop). Chuyển unicast/broadcast là chức năng của switch, và bảo mật giữa vùng trusted/untrusted là của firewall."
+ },
+ "fund-33": {
+  "e": "Rapid elasticity là khả năng tự động tăng giảm tài nguyên theo nhu cầu thực tế. Giám sát mức dùng là measured service, pooling đa tenant là resource pooling, còn tự phục vụ là on-demand self-service."
+ },
+ "fund-34": {
+  "e": "Cần subnet ít địa chỉ nhất nhưng còn dư ít nhất 2 địa chỉ usable cho tương lai, tức tối thiểu 4 host usable: /29 (6 usable). /30 chỉ có 2 usable nên không dư, còn /28 và /24 lãng phí hơn. Cặp 10.10.10.1 và 10.10.10.4 mask 255.255.255.248 cùng thuộc 10.10.10.0/29 và hợp lệ."
+ },
+ "fund-35": {
+  "e": "Trong mô hình query-response, TCP thiết lập kết nối (handshake) trước khi gửi dữ liệu, còn UDP gửi ngay mà không cần thiết lập, nên phù hợp truy vấn ngắn như DNS. Các đáp án khác đảo ngược chức năng: TCP mới có sequencing và error recovery."
+ },
+ "fund-36": {
+  "e": "Private IPv4 giúp tiết kiệm địa chỉ public unique toàn cầu, và do không route trực tiếp trên Internet nên che giấu host nội bộ khỏi truy cập từ bên ngoài (một lớp bảo vệ trước tấn công từ ngoài). Private không làm routing table lớn hơn và không dùng để renumbering; địa chỉ private không unique toàn cầu nên cũng không thể 'treat as unique'.",
+  "warn": "Đáp án \"bảo vệ trước tấn công DoS từ bên ngoài\" theo key gốc hơi gượng: private address chỉ che host khỏi truy cập trực tiếp từ ngoài, không thực sự chống DoS."
+ },
+ "fund-37": {
+  "e": "Traffic shaping giới hạn băng thông/tốc độ gửi bằng cách buffer và làm mượt lưu lượng vượt ngưỡng. Nó không phải dynamic flow identification, policy-based routing hay best-effort service."
+ },
+ "fund-38": {
+  "e": "Mục đích chính của không gian private là bảo tồn không gian địa chỉ unique toàn cầu (public IPv4) vốn đang cạn. Việc giới hạn truy cập từ Internet chỉ là tác dụng phụ, không phải mục đích chính."
+ },
+ "fund-39": {
+  "e": "PC có mask 255.255.255.192 (/26) trong khi router/subnet dùng /27 (10.2.2.1/27). Mask sai khiến PC nhận định sai phạm vi mạng cục bộ nên cần sửa Subnet Mask thành 255.255.255.224. Default gateway 10.2.2.1, DNS 8.8.8.8 và DHCP đều không phải nguyên nhân."
+ },
+ "fund-40": {
+  "e": "TCP gửi acknowledgment cho dữ liệu nhận được nên đảm bảo độ tin cậy và kiểm lỗi, phù hợp HTTPS, còn UDP hoạt động không có acknowledgment. UDP không đảm bảo delivery, không có sequencing hay flow control như các đáp án sai nêu."
+ },
+ "fund-41": {
+  "e": "8 subnet mỗi subnet 30 host cần /27 (255.255.255.224, 30 host usable). Subnet đầu tiên là 192.168.32.0/27 có usable .1-.30 nên last usable là 192.168.32.30. Interface Layer 3 dùng `no switchport`; các mask /28 không đủ 30 host và các lựa chọn khác sai địa chỉ hoặc lệnh."
+ },
+ "fund-42": {
+  "e": "Private IPv4 không được route trên Internet nên giảm bề mặt tiếp xúc với tấn công từ bên ngoài, góp phần giảm rủi ro xâm nhập. Nó không tự đáp ứng PCI hay luật, và không làm giảm forwarding table trên router (thực tế dùng với NAT)."
+ },
+ "fund-43": {
+  "e": "FTP dùng hai kết nối riêng: control (TCP 21) và data (TCP 20 hoặc port động). Block number và UDP 69 là của TFTP, và FTP thường yêu cầu xác thực (hoặc anonymous nhưng không phải luôn không xác thực)."
+ },
+ "fund-44": {
+  "e": "Địa chỉ private (RFC 1918) giúp tiết kiệm không gian địa chỉ public duy nhất toàn cầu vì nhiều mạng có thể tái sử dụng cùng dải nội bộ. Multicast, loopback và public không có tác dụng bảo tồn này."
+ },
+ "fund-45": {
+  "e": "Địa chỉ private không route trên Internet nên giúp che chắn thiết bị nội bộ khỏi truy cập trực tiếp từ bên ngoài. Chúng không tạo kết nối bảo mật qua Internet (cần VPN) và không routable trên mạng ngoài."
+ },
+ "fund-46": {
+  "e": "Policing loại bỏ (drop) hoặc remark traffic vượt committed rate (CAR). Shaping thì buffer/delay phần vượt, còn WFQ và FIFO là cơ chế queueing, không drop theo committed rate."
+ },
+ "fund-47": {
+  "e": "Mỗi VM chạy độc lập với các VM khác trên cùng hypervisor và nhiều VM cùng chạy trên một phần cứng vật lý. VM không tự động nối với nhau, không chia tài nguyên bắt buộc đều nhau, và OS của VM độc lập (không phụ thuộc hypervisor)."
+ },
+ "fund-48": {
+  "e": "Private IPv4 cho phép tái sử dụng cùng dải địa chỉ ở nhiều site và tiết kiệm không gian địa chỉ unique toàn cầu. Nó không cung cấp kết nối Internet trực tiếp (cần NAT), không quảng bá routing ra WAN và không phải là không giới hạn."
+ },
+ "fund-49": {
+  "e": "Mask nhị phân 11111111.11111111.11111111.11111000 có 29 bit 1 nên là /29 (255.255.255.248). /27, /28, /30 tương ứng 224, 240, 252 ở octet cuối."
+ },
+ "fund-50": {
+  "e": "Tần số 1 Hz là 1 chu kỳ mỗi giây, tức 60 chu kỳ mỗi phút. Vì vậy 60 lần mỗi phút = 1 Hz, còn 60 Hz là 60 lần mỗi giây."
+ },
+ "fund-51": {
+  "e": "FCS-Err cao nghĩa là frame bị hỏng khi nhận, thường do lỗi vật lý như cáp lỗi, đầu nối kém hoặc nhiễu. Latency thấp loại trừ băng thông cao; speed mismatch và cáp quá dài thường biểu hiện bằng lỗi khác (collision, late collision) hoặc link không lên."
+ },
+ "fund-52": {
+  "e": "Hypervisor là thành phần kiểm soát và phân phối tài nguyên vật lý (CPU, RAM, storage, NIC) cho từng VM. Vỏ máy, OS hay CPU tự nó không làm nhiệm vụ cấp phát này."
+ },
+ "fund-53": {
+  "e": "Cáp quang truyền tín hiệu xa hơn và cung cấp tốc độ/băng thông cao hơn đồng. Quang không mang dòng điện (không dùng cho PoE), thường đắt hơn khi mua patch cable và ít nhạy với nhiệt độ/độ ẩm/nhiễu hơn đồng."
+ },
+ "fund-54": {
+  "e": "Hai switch nối bằng cáp Cat5 đã test tốt nhưng cả hai port access đều down, cho thấy cấu hình speed hai đầu không khớp (speed cố định khác nhau) nên link không lên. Cat5 vẫn hỗ trợ tới 100 m; duplex mismatch thường khiến link vẫn up nhưng lỗi, còn portfast không ảnh hưởng trạng thái link vật lý."
+ },
+ "fund-55": {
+  "e": "Output có 261028 input errors trong đó 259429 CRC và 1599 frame errors, là lỗi vật lý (cáp/đầu nối/nhiễu/duplex). Không có drop ở buffer, không có output errors, và duplicate IP hay err-disabled phía xa không xuất hiện trong show interface như vậy."
+ },
+ "fund-56": {
+  "e": "10GBase-SR (multimode) và 10GBase-LR (single-mode) đều bắt buộc dùng cáp quang (fiber). Chúng khác nhau về loại fiber (SR multimode, LR single-mode) nên không dùng chung loại fiber và cũng không dùng UTP."
+ },
+ "fund-57": {
+  "e": "SOHO hỗ trợ khoảng 1 đến 50 người dùng và có router port kết nối ra broadband. Nó không cần kiến trúc core-distribution-access hay cổng 10Gb trên mọi uplink, và 50-100 người dùng vượt phạm vi SOHO."
+ },
+ "fund-58": {
+  "e": "Private IPv4 cho phép nhiều công ty dùng cùng dải địa chỉ mà không xung đột vì không route trên Internet. Nó không cho phép kết nối trực tiếp từ ngoài vào, và để ra Internet vẫn cần NAT."
+ },
+ "fund-59": {
+  "e": "Subnet là 10.2.2.0/29 (host 10.2.2.1-10.2.2.6), nhưng default gateway cấu hình là 10.2.2.10 nằm ngoài subnet nên PC không tới được gateway. Cần sửa Default Gateway về địa chỉ trong subnet (ví dụ 10.2.2.1). Mask /29 và DNS 8.8.8.8 phù hợp."
+ },
+ "fund-60": {
+  "e": "Private IPv4 không được route trên Internet nên tạo thêm một lớp bảo vệ trước các mối đe dọa từ Internet. Nó không tự đảm bảo tuân thủ PCI, không mã hóa/bảo mật kết nối qua Internet, và host chỉ gửi dữ liệu ra ngoài vẫn cần NAT."
+ },
+ "fund-61": {
+  "e": "TCP gửi acknowledgment cho mỗi segment nhận được, tạo thêm overhead và độ trễ, còn UDP không dùng acknowledgment nên độ trễ thấp, hợp với VoIP. UDP không đảm bảo delivery và không có sequencing như các đáp án nhiễu nêu."
+ },
+ "fund-62": {
+  "e": "Global unicast IPv6 là địa chỉ routable trên Internet, nên dùng khi subnet cần routable qua Internet. Unique local (FC00::/7) tương đương private IPv4, chỉ dùng nội bộ tổ chức và không routable trên Internet."
+ },
+ "fund-63": {
+  "e": "Địa chỉ private chỉ route trong mạng nội bộ, không truy cập được từ Internet, nên bảo vệ server khỏi truy cập ngoài và chỉ cho người dùng nội bộ vào. Global unicast và public có thể reach từ Internet; multicast không dùng để gán cho server như vậy."
+ },
+ "fund-64": {
+  "e": "Traffic shaping đưa phần lưu lượng vượt rate vào hàng đợi (buffer) để gửi sau, làm mượt burst. Việc đánh dấu/sửa thuộc tính QoS là marking, còn phân loại là classification."
+ },
+ "fund-65": {
+  "e": "Router và switch là hai thiết bị khác loại, pin 1,2 là Tx/Rx theo kiểu MDI và 3,6 theo kiểu MDI-X nên dùng cáp straight-through. Crossover dùng cho thiết bị cùng loại; rollover/console dùng cho cổng console."
+ },
+ "fund-66": {
+  "e": "Trước khi triển khai VM phải xét giới hạn tài nguyên của host như số CPU core và dung lượng RAM để cấp phát hợp lý. Các đáp án khác (VSM, peripheral vật lý) không phải yếu tố cần xem xét."
+ },
+ "fund-67": {
+  "e": "VM gồm các file cấu hình (VM configuration) mô tả phần cứng ảo, được hỗ trợ bởi tài nguyên vật lý của hypervisor host. Tài nguyên vật lý thật và tiến trình hypervisor thuộc host, không nằm trong VM."
+ },
+ "fund-68": {
+  "e": "Cần subnet cho 3 PC cộng dự trữ cho 30 VLAN thêm trong cùng Class C, nên mỗi VLAN dùng subnet nhỏ: /29 (255.255.255.248, 6 host) vừa đủ 3 PC, và 256/8 = 32 subnet đủ cho 1 + 30 VLAN. /30 chỉ có 2 host usable (thiếu), còn /25 và /24 quá lớn nên không đủ chỗ cho 30 VLAN nữa."
+ },
+ "fund-69": {
+  "e": "TCP được ưu tiên khi độ tin cậy dữ liệu quan trọng (ack, retransmit), còn UDP dùng khi chấp nhận mất gói và cần độ trễ thấp. Các đáp án khác đảo ngược hoặc mô tả sai đặc tính của hai giao thức."
+ },
+ "fund-70": {
+  "e": "Mask /25 làm hai PC khác subnet (.0-.127 và .128-.255). Dùng 255.255.255.0 (/24) đưa cả 192.168.25.100 và 192.168.25.128 vào cùng subnet 192.168.25.0/24 nên giao tiếp cục bộ được. Các mask /27, /29, /30 chia nhỏ hơn nên vẫn tách hai host."
+ },
+ "fund-71": {
+  "e": "RFC 1918 là các dải private dùng cùng NAT để tiết kiệm địa chỉ public IPv4: host nội bộ ra Internet qua NAT. Chúng không được ISP route, không truy cập Internet nếu không chuyển đổi, và không phải giải pháp bảo mật chính."
+ },
+ "fund-72": {
+  "e": "Interface báo line protocol down, Half Duplex 1000Mbps kèm 50 collisions và không CRC/frame lỗi: đây là dấu hiệu duplex mismatch (một đầu half, đầu kia full). Cáp không bị ngắt (interface vẫn up, có input), tải thấp và không liên quan port security."
+ },
+ "fund-73": {
+  "e": "Các VM trên cùng hypervisor chia sẻ tài nguyên phần cứng của host (CPU, RAM, storage, NIC) do hypervisor phân phối. Đáp án hardware resources bao quát đúng khái niệm này, còn backplane hay storage ngoài không phải thành phần phân phối chuẩn."
+ },
+ "fund-74": {
+  "e": "Pin 1 nối 3 và 2 nối 6 là đảo cặp truyền/nhận nên cần cáp crossover, dùng cho hai thiết bị cùng loại khi không có auto MDI-X. Straight-through nối 1-1, 2-2; console/rollover là cáp console."
+ },
+ "fund-75": {
+  "e": "Counters có 1790 CRC và 1790 frame errors, cho thấy frame bị hỏng do checksum sai (lỗi vật lý/cáp). Collision chỉ 1, output queue chỉ 1 drop không đáng kể, và broadcast không gây reset port."
+ },
+ "fund-76": {
+  "e": "Private IPv4 giúp giảm tình trạng thiếu địa chỉ public IPv4 và, vì không route trên Internet, tạo thêm một lớp bảo vệ trước mối đe dọa từ Internet. Nó không cung cấp redundancy hay Internet trực tiếp (cần NAT)."
+ },
+ "fund-77": {
+  "e": "Dải private RFC 1918: 10.0.0.0/8, 172.16.0.0-172.31.255.255 và 192.168.0.0/16. Do đó 10.172.76.200 và 172.31.255.100 là private; 12.17.1.20, 172.15.2.250 và 192.169.32.10 nằm ngoài các dải này (public)."
+ },
+ "fund-78": {
+  "e": "Trong split MAC, AP xử lý các chức năng real-time (beacon, probe response, mã hóa, ACK) còn WLC xử lý các chức năng quản lý/điều khiển không real-time như xác thực và roaming. Do đó chức năng real-time chạy trên từng AP."
+ },
+ "fund-79": {
+  "e": "Ba kênh không chồng lấn ở dải 2.4 GHz (thường dùng) là 1, 6 và 11, mỗi kênh cách nhau 5 kênh (25 MHz). Các nhóm có kênh 5 hoặc 10 vẫn chồng lấn với kênh lân cận."
+ },
+ "fund-80": {
+  "e": "FlexConnect phù hợp khi cần quản lý tập trung nhiều văn phòng từ xa không có WLC riêng; AP vẫn chuyển tiếp traffic cục bộ khi mất kết nối WLC. Nó không dành cho môi trường cần WLC cục bộ tại từng văn phòng hay location services độ chính xác cao."
+ },
+ "fund-81": {
+  "e": "Split MAC chia các chức năng Layer 2 (MAC) giữa AP (real-time) và WLC (quản lý/control). Nó không liên quan MAC khác nhau cho từng băng tần hay dùng hai AP."
+ },
+ "fund-82": {
+  "e": "Lightweight AP chỉ dùng trong kiến trúc split MAC (cần WLC), và trong cả ba kiến trúc thì AP vẫn là thiết bị quản lý các client không dây kết nối vào hạ tầng có dây. Autonomous AP và cloud-based không bắt buộc WLC; CAPWAP không dành riêng cho cloud-based."
+ },
+ "fund-83": {
+  "e": "Autonomous AP hoạt động độc lập, cấu hình riêng từng AP, phù hợp văn phòng nhỏ nhu cầu wireless tối thiểu và không cần quản lý tập trung. Split MAC cần WLC và cloud-based cần dịch vụ cloud."
+ },
+ "fund-84": {
+  "e": "RFC 1918 cho phép nhà quản trị thiết kế địa chỉ nội bộ linh hoạt mà không cần xin cấp địa chỉ public. Nó không route trên Internet và không dùng để giới hạn số host hay cố ý chồng lấn với mạng khác."
+ },
+ "fund-85": {
+  "e": "Container là dạng ảo hóa mức hệ điều hành: host OS (chia sẻ kernel) kiểm soát tài nguyên như CPU và memory cho từng tiến trình/container. Khác với VM, container không có guest OS riêng."
+ },
+ "fund-86": {
+  "e": "Cần 20 host nên cần ít nhất 5 bit host: /27 (255.255.255.224, 30 host usable). Các subnet đã dùng là .0/28, .16/28 và .64/28; block 10.10.225.32/27 (.32-.63) không trùng lặp với chúng. 10.10.225.48/27 không đúng ranh giới /27 và /28 chỉ có 14 host."
+ },
+ "fund-87": {
+  "e": "Point-to-point WAN dùng một đường dành riêng (dedicated) nối trực tiếp hai site, qua một line duy nhất. Nó không dùng router trung tâm cho nhiều site, không cung cấp redundancy cho các branch và kết nối trực tiếp mọi router là full mesh."
+ },
+ "fund-88": {
+  "e": "Virtualization (hypervisor) cho phép nhiều hệ điều hành chạy trên một server vật lý. Cloud computing là mô hình dịch vụ, container chia sẻ kernel host OS thay vì chạy nhiều OS."
+ },
+ "fund-89": {
+  "e": "Shaping làm mượt burst bằng cách trì hoãn (delay) phần vượt ngưỡng, còn policing có thể áp dụng cả chiều inbound và outbound. Shaping không drop traffic (nó buffer), shaping và rate limiting khác nhau, và policing vẫn hỗ trợ trên subinterface."
+ },
+ "fund-90": {
+  "e": "TCP thiết lập kết nối với thiết bị đầu kia trước khi truyền dữ liệu, còn UDP truyền mà không cần thiết lập kết nối. Sequencing/flow control thuộc TCP, UDP không có error recovery."
+ },
+ "fund-91": {
+  "e": "Netmask 0xffffe000 = 255.255.224.0 (/19), IP 10.8.138.14 thuộc subnet 10.8.128.0/19 (dải 10.8.128.0-10.8.159.255). Default gateway là địa chỉ usable đầu tiên: 10.8.128.1."
+ },
+ "fund-92": {
+  "e": "Private IPv4 là không gian địa chỉ bị cô lập khỏi Internet vì không được route công khai. Nó không giảm forwarding table, không traverse Internet nhờ ACL và không loại bỏ nhu cầu routing giữa các thiết bị."
+ },
+ "fund-93": {
+  "e": "600 server, mỗi server một kết nối trên subnet production, nên cần ít nhất 600 host. /22 (255.255.252.0) có 1022 host usable, vừa đủ và ít lãng phí; /23 chỉ 510 nên thiếu, còn /20 (4094) quá lãng phí và /28 quá nhỏ."
+ },
+ "fund-94": {
+  "e": "VM gồm một guest OS và dịch vụ/ứng dụng chạy bên trong, chạy trên hypervisor. Nó không phải thiết bị quản lý hạ tầng cục bộ, không dùng supervisor và không phải 'hardware-centric'."
+ },
+ "fund-95": {
+  "e": "TCP đảm bảo truyền theo thứ tự, tin cậy, còn UDP có độ trễ thấp và overhead nhỏ. Các đáp án khác nhầm lẫn sang chức năng khác (multicast, neighbor discovery của CDP/LLDP, STP, MAC/IP)."
+ },
+ "fund-96": {
+  "e": "Router và switch là thiết bị khác loại nên dùng cáp straight-through. Crossover dùng cho thiết bị cùng loại; console/rollover chỉ dùng cho kết nối quản trị cổng console."
+ }
+}

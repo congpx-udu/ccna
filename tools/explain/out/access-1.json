@@ -1,0 +1,304 @@
+{
+ "access-1": {
+  "e": "LACP (IEEE 802.3ad/802.1AX) là giao thức negotiate để gộp nhiều cổng thành một EtherChannel; khi cả hai phía đặt active thì chúng chủ động gửi LACPDU để thỏa thuận. 802.1q trunk chỉ là đóng gói VLAN, LLDP chỉ là giao thức discovery, còn vPC là công nghệ riêng của Nexus, không phải cơ chế gộp 4 port thông thường."
+ },
+ "access-2": {
+  "e": "RSTP chỉ có 3 trạng thái: discarding, learning và forwarding. Discarding gộp blocking, disabled và listening của STP cũ, nên 'listening' và 'blocking' không phải trạng thái RSTP; 'speaking' không tồn tại."
+ },
+ "access-3": {
+  "e": "Wireless LAN controller (WLC) tập trung quản lý, cấu hình và giám sát nhiều access point (qua CAPWAP). Vai trò 'first line of defense' thuộc firewall, còn đăng nhập an toàn do AAA/RADIUS đảm nhiệm; việc hỗ trợ standalone hay controller-based là đặc điểm của AP, không phải vai trò của WLC."
+ },
+ "access-4": {
+  "e": "Với lightweight AP, WLC là thiết bị trung gian: nó nhận yêu cầu xác thực của client qua CAPWAP và chuyển tiếp tới RADIUS/AAA server. AP lightweight không tự xử lý xác thực, còn RADIUS/TACACS chỉ là nơi kiểm tra chứ không điều khiển việc chuyển tiếp."
+ },
+ "access-5": {
+  "e": "ARP request là broadcast (FF:FF:FF:FF:FF:FF), nên switch flood ra mọi port cùng VLAN trừ port nhận vào (G0/0). Switch không forward broadcast tới một port cụ thể hay drop nó."
+ },
+ "access-6": {
+  "e": "Với BPDU Guard, nếu port PortFast nhận được BPDU thì switch đưa port vào trạng thái err-disabled ngay lập tức để chống loop/switch lạ. Port không chuyển sang blocking hay root port, và cũng không giữ trạng thái forwarding."
+ },
+ "access-7": {
+  "e": "Lệnh `switchport trunk native vlan 10` đặt VLAN 10 làm native VLAN, tức frame của VLAN này đi qua trunk không có tag 802.1Q. `allowed vlan` chỉ lọc VLAN, `mode trunk` chỉ bật trunk, `encapsulation dot1q` chỉ chọn kiểu đóng gói."
+ },
+ "access-8": {
+  "e": "Cisco Unified Wireless (WLC với RRM) phân tích tải client và nhiễu nền rồi tự động gán channel (Dynamic Channel Assignment) để giảm chồng lấn. Nó không luân phiên băng tần 2.4/5 GHz, không gán thủ công theo thiết bị và không phân kênh theo hãng."
+ },
+ "access-9": {
+  "e": "Switch học địa chỉ MAC nguồn (source MAC) của frame đi vào (ingress) cổng và ghi vào MAC address table cùng với port. VTP và DTP là giao thức VLAN/trunk, không liên quan đến việc xây bảng MAC; egress traffic không được dùng để học."
+ },
+ "access-10": {
+  "e": "Root bridge là switch có Bridge ID thấp nhất, so priority trước rồi mới tới MAC. Switch 2 có priority 24586, thấp nhất trong 32778, 24586, 28682 và 64000, nên là root của VLAN 110."
+ },
+ "access-11": {
+  "e": "PC-1/PC-2 thuộc Data VLAN nên cổng nối PC chỉ cần `switchport mode access` + access vlan của data, còn cổng nối Phone-1 kèm PC phải là access port có `switchport access vlan` cho data và `switchport voice vlan` cho phone (khác VLAN). Option đúng là option đặt cả hai cổng ở access mode với data VLAN 8 và voice VLAN 9; các option dùng trunk hoặc đặt voice trùng data VLAN thì sai."
+ },
+ "access-12": {
+  "e": "Khi destination MAC không có trong bảng (unknown unicast), switch flood frame ra tất cả port cùng VLAN trừ port nhận vào (Fa0/1). Nó không gửi ngược lại port nguồn, không drop và không giữ frame chờ timer."
+ },
+ "access-13": {
+  "e": "Switch có bộ đệm/queue cho mỗi port: frame mới đến trong lúc port đang truyền frame trước sẽ được xếp hàng chờ rồi gửi sau. Không có việc drop rồi yêu cầu retransmit, cũng không gửi hai frame đồng thời."
+ },
+ "access-14": {
+  "e": "Để thêm VLAN cần thiết mà không ảnh hưởng các VLAN đang chạy, dùng `switchport trunk allowed vlan add 13` (thêm vào danh sách hiện có). Lệnh không có `add` sẽ ghi đè danh sách, còn `none` hay `remove 10-11` sẽ cắt các VLAN khác đang dùng."
+ },
+ "access-15": {
+  "e": "Switch flood frame khi địa chỉ MAC đích là unknown unicast (không có trong MAC table), hoặc là broadcast/multicast. MAC nguồn chưa biết chỉ khiến switch học thêm địa chỉ, không gây flood."
+ },
+ "access-16": {
+  "e": "Native VLAN nên được tách riêng, không dùng chung với VLAN dữ liệu/quản lý khác trong administrative domain, nhằm chống VLAN hopping/double tagging. Dùng VLAN 1 mặc định là kém an toàn, và đặt khác ID ở hai đầu link gây native VLAN mismatch."
+ },
+ "access-17": {
+  "e": "`spanning-tree portfast default` (global) bật PortFast trên mọi access port, giúp cổng nối PC vào forwarding ngay mà không qua listening/learning. `bpduguard default` chỉ là bảo vệ, `portfast trunk` dành cho trunk, và `no spanning-tree portfast` là tắt tính năng."
+ },
+ "access-18": {
+  "e": "Client Band Select trên WLC khiến AP ưu tiên đẩy client dual-band sang băng 5 GHz (ít nhiễu hơn) bằng cách trì hoãn phản hồi probe ở 2.4 GHz. MU-MIMO, OEAP split tunnel và re-anchor roamed clients không phục vụ mục đích chọn băng tần."
+ },
+ "access-19": {
+  "e": "Protected Management Frames (802.11w) bảo vệ chống spoofed association/deauth, và Comeback timer quy định thời gian client phải chờ trước khi thử association lại. SA Query timeout là tham số khác, còn 802.1X hay MAC filtering không có Comeback timer."
+ },
+ "access-20": {
+  "e": "Khi client roam giữa các AP cùng SSID, nó gửi Reassociation Request (khác Association Request dùng cho lần kết nối đầu tiên). Probe Request chỉ để dò tìm mạng, Authentication Request không phải frame đặc trưng của roaming."
+ },
+ "access-21": {
+  "e": "Switch PoE dùng CDP (và LLDP-MED) để đàm phán mức công suất cấp cho thiết bị như AP. IGMP là multicast, AWPP là giao thức mesh, NDP là IPv6 neighbor discovery nên không liên quan."
+ },
+ "access-22": {
+  "e": "Để SW1 trở thành trunk một cách thụ động (chỉ chờ đàm phán DTP), đặt `switchport mode dynamic auto`; mode auto sẽ thành trunk khi phía bên kia là desirable hoặc trunk. `dynamic desirable` là chủ động gửi DTP, `mode trunk` là cố định, `dot1q-tunnel` là QinQ."
+ },
+ "access-23": {
+  "e": "Cổng gắn IP phone + PC cần `switchport mode access`, `switchport access vlan 300` cho data và `switchport voice vlan 400` cho voice theo exhibit. Option đảo VLAN hoặc dùng mode trunk / `switchport trunk vlan` thì sai cú pháp hoặc sai VLAN."
+ },
+ "access-24": {
+  "e": "Access point (AP) kết nối thiết bị không dây vào mạng có dây (cầu nối 802.11 sang Ethernet). Bảo mật đăng nhập, chống DDoS hay 'first line of defense' không phải vai trò chính của AP."
+ },
+ "access-25": {
+  "e": "Root bridge là switch có priority thấp nhất; Branch-3 có priority 0 là nhỏ nhất có thể nên luôn thắng. Branch-4 dùng `root primary` chỉ hạ priority xuống khoảng 24576 (hoặc thấp hơn root hiện tại một bước) nên không thể thấp hơn 0."
+ },
+ "access-26": {
+  "e": "Switch học source MAC của Sales-4 (ghi MAC + port vào bảng) rồi tra MAC đích Sales-1 và forward ra đúng port. Việc ánh xạ MAC sang IP là của ARP, không phải của switch; frame không bị flood hay drop vì thiếu entry nguồn."
+ },
+ "access-27": {
+  "e": "Channel chồng lấn gây nhiễu giữa các AP/cell, làm tăng retransmission và giảm hiệu năng mạng. Nó không trực tiếp làm lộ bảo mật, nhầm lẫn SSID hay cho phép nghe lén."
+ },
+ "access-28": {
+  "e": "Switch cũ có thể mang revision number cao hơn và ghi đè VLAN database của cả domain; vì vậy phải thêm switch có revision number thấp hơn (ví dụ reset về 0). Revision cao hơn sẽ làm hỏng VLAN database; DTP không liên quan tới VTP revision."
+ },
+ "access-29": {
+  "e": "Distribution system port là port dữ liệu của WLC nối với switch để mang traffic của AP/client (thường là trunk). Service port dùng quản lý out-of-band, redundancy port cho HA, console cho truy cập CLI."
+ },
+ "access-30": {
+  "e": "Router A cần chạy CDP toàn cục (`cdp run`) và tắt CDP trên interface hướng tới router khác bằng `no cdp enable`, để chỉ còn gửi CDP tới router C qua interface còn lại. `no cdp run` tắt CDP hoàn toàn nên option đó sai."
+ },
+ "access-31": {
+  "e": "Với known unicast, switch tra MAC table và chỉ gửi frame ra port tương ứng với MAC đích. Flood/broadcast chỉ xảy ra với unknown unicast hoặc broadcast."
+ },
+ "access-32": {
+  "e": "PortFast đưa cổng vào forwarding ngay khi cắm cáp (bỏ qua listening và learning), nên interface sẵn sàng gửi/nhận dữ liệu nhanh hơn. Nó không ảnh hưởng tốc độ link, QoS hay ưu tiên voice/video."
+ },
+ "access-33": {
+  "e": "Trong spine-and-leaf, mỗi leaf switch kết nối tới mọi spine switch (full mesh giữa hai tầng), còn leaf không nối với nhau và spine không nối với nhau. Nhờ đó độ trễ giữa các endpoint dự đoán được."
+ },
+ "access-34": {
+  "e": "802.11a hoạt động ở 5 GHz với nhiều channel không chồng lấn, nên được dùng thay 802.11b/g (2.4 GHz, chỉ 3 channel) khi cần nhiều channel. 802.11a không tương thích với b/g, không bị nhiễu lò vi sóng 2.4 GHz và không rẻ hơn."
+ },
+ "access-35": {
+  "e": "Interface đã có `lldp transmit/receive`, nhưng neighbor discovery đang bị tắt nên cần bật LLDP toàn cục (`lldp run`). Vì ISP dùng thiết bị hãng khác, LLDP (chuẩn mở) mới dùng được thay vì CDP."
+ },
+ "access-36": {
+  "e": "Cổng không dùng nên được gán vào một black hole VLAN (VLAN không dùng, không có SVI/trunk) và shutdown để tăng bảo mật. Chỉ để native VLAN hoặc cấu hình access port vẫn cho phép truy cập mạng."
+ },
+ "access-37": {
+  "e": "AP phải ở chế độ lightweight để dùng CAPWAP tunnel với WLC (cấu hình và dữ liệu do WLC quản lý). Chế độ autonomous hoạt động độc lập, không cần WLC."
+ },
+ "access-38": {
+  "e": "Hai switch chỉ tạo được EtherChannel khi dùng cùng giao thức và mode tương thích: với LACP cần ít nhất một phía active. Vì Switch2 đang dùng LACP không phù hợp, đổi sang LACP active là hợp lệ (desirable thuộc PAgP, `on` không thương lượng và không ghép với LACP)."
+ },
+ "access-39": {
+  "e": "Xác thực không dây (open/WPA/802.1X) diễn ra ở Layer 2, trước khi client có IP. SSID chỉ là tên mạng, radio và band là lớp vật lý."
+ },
+ "access-40": {
+  "e": "Trong mô hình 3 tầng, traffic giữa hai host ở hai access switch khác nhau đi access - distribution - access khi cùng distribution; đáp án nguồn chọn access - distribution - distribution - access. Core chỉ cần khi traffic phải đi qua các block distribution khác nhau.",
+  "warn": "Đường đi đầy đủ giữa hai distribution khác nhau thường được mô tả là access - distribution - core - distribution - access; đáp án nguồn B chỉ đúng khi hai distribution được nối trực tiếp."
+ },
+ "access-41": {
+  "e": "SSID là tên định danh một WLAN (mạng không dây logic). Nó không phải cơ chế bảo mật và không định danh một AP riêng lẻ (đó là BSSID)."
+ },
+ "access-42": {
+  "e": "SSID có thể ẩn (không broadcast) hoặc broadcast, và dài tối đa 32 ký tự. SSID không định danh duy nhất AP hay client, và tự nó không cung cấp bảo mật."
+ },
+ "access-43": {
+  "e": "Lệnh `spanning-tree portfast` mặc định áp dụng cho access port (nối end device). Trunk cần thêm từ khóa `trunk`, còn Layer 3 interface/subinterface không chạy STP."
+ },
+ "access-44": {
+  "e": "STP có thể giữ cổng ở listening/learning khoảng 30 giây, khiến PC không nhận được DHCP kịp thời (giải pháp: PortFast). DTP, VTP và 802.1Q không chặn DHCP theo cách này."
+ },
+ "access-45": {
+  "e": "Vùng intermittent xảy ra giữa các cell/zone mà vùng phủ sóng không chồng nhau đủ, hoặc chồng lấn cùng channel; theo exhibit đó là giữa zone 3 và zone 4."
+ },
+ "access-46": {
+  "e": "Probe response là 802.11 management frame, cùng nhóm với beacon, authentication và association. Control frame (RTS/CTS/ACK) và data frame mang nhiệm vụ khác."
+ },
+ "access-47": {
+  "e": "Ở 2.4 GHz chỉ có 3 channel không chồng lấn là 1, 6 và 11, nên thiết kế khuyến nghị gán ba AP đầu tiên vào các channel này. Gán cùng channel cho AP kề nhau gây co-channel interference."
+ },
+ "access-48": {
+  "e": "SW_2 dùng DTP nên phải ở mode dynamic desirable (đầu kia chủ động đàm phán), và thêm VLAN 5 vào trunk bằng `switchport trunk allowed vlan add 5`. Các option dùng private-vlan, trunk pruning hay dynamic auto + encapsulation negotiate không đáp ứng yêu cầu."
+ },
+ "access-49": {
+  "e": "Host D chưa có trong bảng MAC (unknown unicast), nên switch flood frame ra mọi port cùng VLAN trừ Fa0/1 nơi nhận. Đây không phải broadcast storm hay err-disable."
+ },
+ "access-50": {
+  "e": "PC2 không có trong bảng MAC vì cổng Fa0/2 đang cấu hình sai (trunk với allowed VLAN 3). Phải bỏ trunk, xóa allowed VLAN và đặt `switchport mode access` để cổng nối PC2 hoạt động đúng."
+ },
+ "access-51": {
+  "e": "PortFast bỏ qua các trạng thái listening và learning, đưa cổng chuyển thẳng sang forwarding. Forwarding là đích cuối, còn blocking/disabled không phải các trạng thái bị bỏ qua theo cách này."
+ },
+ "access-52": {
+  "e": "Khi bật hoặc thay đổi cấu hình LAG trên WLC, controller phải reboot để cấu hình có hiệu lực. Các lựa chọn còn lại không phải yêu cầu thực tế."
+ },
+ "access-53": {
+  "e": "Channel không chồng lấn phải có dải tần số tách biệt, không liền nhau (ví dụ 1, 6, 11). Security, tốc độ hay SSID không quyết định chồng lấn."
+ },
+ "access-54": {
+  "e": "EtherChannel động dùng chuẩn mở là LACP với mode active/passive; trunk ở hai phía cho phép mọi VLAN đi qua đầy đủ nên PC liên lạc được. PAgP (desirable/auto) là Cisco proprietary, mode `on` không thương lượng, và access mode không mang nhiều VLAN."
+ },
+ "access-55": {
+  "e": "LACP cần ít nhất một phía ở mode active hoặc passive; nếu SW1 đang ở mode không phù hợp thì EtherChannel không lên. Đổi SW1 sang active hoặc passive sẽ cho phép LACP thương lượng với SW2 (desirable/auto là của PAgP)."
+ },
+ "access-56": {
+  "e": "`lldp timer 60` đặt chu kỳ gửi LLDP là 60 giây (1 phút), và `lldp holdtime 180` đặt thời gian thông tin còn hiệu lực là 180 giây (3 phút). Đơn vị là giây nên timer 1 hay holdtime 3 sai, còn `tlv-select` chỉ chọn TLV."
+ },
+ "access-57": {
+  "e": "Wireless LAN controller tập trung kiểm soát xác thực và roaming cho mọi AP trong mạng doanh nghiệp. Switch, firewall hay một lightweight AP đơn lẻ không có vai trò này."
+ },
+ "access-58": {
+  "e": "Cổng nối IP phone cần `switchport mode access` kèm `switchport voice vlan 10` theo exhibit. Các option dùng trunk native/allowed, hoặc private-vlan không phù hợp với cổng access của phone."
+ },
+ "access-59": {
+  "e": "Để tạo port channel 10 dùng LACP cần mode active hoặc passive. Desirable/auto thuộc PAgP, còn mode `on` là EtherChannel tĩnh, không phải LACP."
+ },
+ "access-60": {
+  "e": "AP lightweight ở centralized (local mode) kết nối switch bằng access port vì dữ liệu được đóng gói trong CAPWAP tunnel về WLC. Trunk chỉ cần khi dùng FlexConnect local switching nhiều VLAN."
+ },
+ "access-61": {
+  "e": "Link up nhưng chậm, kèm collision/late collision trong exhibit, là dấu hiệu duplex mismatch (một đầu full, một đầu half). Speed mismatch thường làm link không lên."
+ },
+ "access-62": {
+  "e": "Wireless LAN controller cung cấp kiểm soát tập trung cho xác thực và roaming. AP lightweight, firewall hay LAN switch không đảm nhiệm vai trò này."
+ },
+ "access-63": {
+  "e": "Để thêm VLAN mới vào trunk mà không đổi cấu hình hiện có, dùng `switchport trunk allowed vlan add 104`. Không dùng `add` thì danh sách allowed bị thay thế, còn `all` mở thêm cả những VLAN không mong muốn."
+ },
+ "access-64": {
+  "e": "LAG trên WLC gộp nhiều port vật lý thành một link logic để cung cấp dự phòng link và load balancing. Nó không mã hóa management frame, không phải stateful failover và không cho phép dùng VLAN khác nhau."
+ },
+ "access-65": {
+  "e": "Cổng access với `switchport access vlan 20` nhận untagged frame vào VLAN 20, và `switchport voice vlan 30` nhận tagged frame của IP phone (CDP phát hiện) vào VLAN 30. Các option dùng trunk/dynamic không đáp ứng đúng yêu cầu này."
+ },
+ "access-66": {
+  "e": "Để hỗ trợ 802.11r (fast roaming) bật Fast Transition và chọn FT 802.1X khi WLAN dùng xác thực 802.1X; FT PSK dành cho mạng dùng pre-shared key. CCKM là cơ chế riêng của Cisco, không phải 802.11r."
+ },
+ "access-67": {
+  "e": "Chỉ Switch1 gửi LACPDU chủ động khi Switch1 để `active` và Switch2 để `passive` (passive chỉ trả lời). Mode `on` không dùng LACP, còn đặt Switch1 passive thì Switch2 active mới là bên khởi tạo."
+ },
+ "access-68": {
+  "e": "Root bridge là switch có Bridge ID thấp nhất: SW1 có priority 24596 thấp nhất trong 24596, 28692, 32788 và 64000 nên là root cho VLAN 20."
+ },
+ "access-69": {
+  "e": "SSID là định danh (tên) của WLAN mà AP dùng để thiết lập kết nối với client. VLAN ID, WLAN ID và RFID có chức năng khác."
+ },
+ "access-70": {
+  "e": "Cổng nối IP phone + PC dùng `switchport mode access`, `switchport access vlan 50` cho PC và `switchport voice vlan 51` cho phone. Các option dùng trunk hoặc `voice vlan untagged/dot1p` không khớp yêu cầu hai VLAN riêng biệt."
+ },
+ "access-71": {
+  "e": "VLAN tagging (802.1Q) gắn tag VLAN vào frame để nhiều VLAN đi chung một port trunk mà vẫn tách biệt. Numbering, DSCP hay marking không phải cơ chế đóng gói VLAN."
+ },
+ "access-72": {
+  "e": "Link giữa SW1 và SW2 phải là trunk để PC1 và PC2 liên lạc; cần `switchport mode trunk` trên Fa0/1 của SW2, giống SW1. Mode access chỉ mang một VLAN."
+ },
+ "access-73": {
+  "e": "FlexConnect với local switching và VLAN tagging cần nhiều VLAN trên một port nên AP kết nối bằng trunk port. Access port chỉ mang một VLAN."
+ },
+ "access-74": {
+  "e": "Tính năng passive client cho phép WLC học thiết bị có IP tĩnh (như máy in) mà không cần client gửi DHCP/ARP bình thường, tránh lỗi kết nối. DHCP address assignment không giải quyết vấn đề IP tĩnh."
+ },
+ "access-75": {
+  "e": "EtherChannel LACP layer 2 cần mode LACP active (hoặc passive) và trunk để mang VLAN. Desirable là PAgP, `on` là tĩnh không dùng LACP, và passive-passive thì không phía nào khởi tạo."
+ },
+ "access-76": {
+  "e": "Đáp ứng ping từ PC2 tới PC7 mà không ảnh hưởng traffic khác đòi hỏi các trunk giữa SW4, SW11, SW9 cho phép đúng VLAN 14 và 108. Option đúng là option cấu hình trunk với allowed VLAN 14,108 trên các link trung gian, các option khác thiếu VLAN hoặc dùng access port sai."
+ },
+ "access-77": {
+  "e": "MAC learning tự động ghi source MAC vào bảng, và quản trị viên có thể thêm entry tĩnh (static MAC) thủ công. Frame có MAC đích không có trong bảng sẽ bị flood, không bị drop, và MAC table không dùng để tạo ARP table."
+ },
+ "access-78": {
+  "e": "Ở Mỹ, các channel 2.4 GHz không chồng lấn là 1, 6 và 11. Channel 14 không được dùng ở Mỹ, còn 2, 7, 9 không đủ cách xa nhau."
+ },
+ "access-79": {
+  "e": "Lệnh `spanning-tree vlan 1 forward-time 20` đặt forward delay, tức thời gian của các trạng thái listening và learning. Hello-time, max-age và priority không đặt thời gian listen/learn."
+ },
+ "access-80": {
+  "e": "Một phía đã cấu hình LACP active; để port-channel lên, phía neighbor cần LACP passive (hoặc active). Đổi mode về passive tương thích với active.",
+  "warn": "Cách diễn đạt 'without negotiating' dễ gây hiểu nhầm; về kỹ thuật chỉ LACP passive/active mới cho port-channel lên, còn mode `on` là static."
+ },
+ "access-81": {
+  "e": "Lightweight mode phụ thuộc vào WLC để quản lý, roaming và cấu hình SSID. Autonomous mode quản lý độc lập, còn bridge/repeater là các mode khác."
+ },
+ "access-82": {
+  "e": "Kiến trúc spine-and-leaf cho đường đi giữa các endpoint luôn có số hop giống nhau nên độ trễ dự đoán được. Nó không giới hạn payload và không chỉ gửi multicast."
+ },
+ "access-83": {
+  "e": "Để yêu cầu 802.11r, đặt Fast Transition ở Enable và bật FT 802.1X trong Authentication Key Management. CCKM, PMF Required và gtk-randomize không liên quan 802.11r."
+ },
+ "access-84": {
+  "e": "Khi destination MAC không có trong bảng, switch flood frame ra mọi port cùng VLAN trừ port nhận vào. Nó không drop và không gửi tới port đầu tiên."
+ },
+ "access-85": {
+  "e": "FlexConnect local switching có VLAN của AP và client khác nhau cần cổng switch là trunk để mang nhiều VLAN. Không thể tắt 802.1Q trunking hay dùng access port trong trường hợp này."
+ },
+ "access-86": {
+  "e": "Lệnh `config serial timeout 0` đặt timeout phiên serial là 0, nghĩa là không bao giờ tự logout. `config sessions timeout` áp dụng cho Telnet/SSH, không phải serial console."
+ },
+ "access-87": {
+  "e": "Để traffic của một WLAN được xử lý ở chi nhánh mà không gửi về WLC, bật FlexConnect Local Switching. HTTP/DHCP profiling và Disassociation Imminent không làm việc đó."
+ },
+ "access-88": {
+  "e": "MAC address learning mặc định được bật trên mọi VLAN và interface. Nó không bị tắt trên trunk, không làm tăng bảo mật cho management VLAN và không phải là nguyên nhân tăng MAC flooding."
+ },
+ "access-89": {
+  "e": "Traffic kết thúc tại chi nhánh và AP sống sót khi WAN lỗi nghĩa là FlexConnect với local switching được bật. Lightweight/local mode phụ thuộc WLC nên không hoạt động khi WAN down."
+ },
+ "access-90": {
+  "e": "Trong kiến trúc lightweight, WLC đảm nhiệm xử lý association, authentication, roaming của client và quản lý RF channel/công suất phát; autonomous AP tự làm các việc này. Beacon và chống collision vẫn do AP thực hiện."
+ },
+ "access-91": {
+  "e": "Option đúng cấu hình trunk có native VLAN 5 (untagged dùng VLAN 5, bỏ VLAN 1), đặt PC vào access VLAN 7 và cho phép VLAN 5,7,9,108 trên trunk giữa hai switch. Các option khác thiếu native VLAN hoặc thiếu VLAN 5 trong allowed list."
+ },
+ "access-92": {
+  "e": "Trạng thái notconnect trên port không shutdown và không err-disabled cho thấy vấn đề vật lý, ở đây là cáp sai loại hoặc hỏng. Shutdown sẽ hiện disabled còn port security hiện err-disabled."
+ },
+ "access-93": {
+  "e": "Layer 3 switch định tuyến traffic giữa các VLAN (inter-VLAN routing) bằng IP, ngoài khả năng chuyển mạch Layer 2. Nó không chỉ chuyển theo MAC và cũng không bị giới hạn chỉ IP."
+ },
+ "access-94": {
+  "e": "Mức truy cập của user được quyết định bởi security policies (Layer 2/3 security, ACL, AAA) nên phải giống nhau ở mọi site. Radio policy, NAS-ID và profile name không quyết định quyền truy cập."
+ },
+ "access-95": {
+  "e": "Autonomous AP map hai VLAN vào hai WLAN nên cần trunk để mang nhiều VLAN. Access port chỉ mang một VLAN."
+ },
+ "access-96": {
+  "e": "Trunk trên distribution port của WLC cho phép nhiều VLAN (nhiều WLAN/interface) cùng đi trong data path. Out-of-band management dùng service port, không phải distribution port."
+ },
+ "access-97": {
+  "e": "Khi MAC đích không có trong bảng, switch flood frame nguyên vẹn ra tất cả port còn lại cùng VLAN. Nó không thêm entry tĩnh, không học MAC đích và không đổi checksum."
+ },
+ "access-98": {
+  "e": "Flooding xảy ra khi thay đổi topology STP làm aged/xóa nhanh bảng MAC, hoặc khi bảng MAC bị tràn (ví dụ MAC flooding attack) nên không còn chỗ lưu entry mới. Cáp lỗi, port-security hay aged entry không gây flooding theo cách này."
+ },
+ "access-99": {
+  "e": "Muốn tắt Port Channel 1 khi số link hoạt động giảm xuống dưới ngưỡng, cấu hình `port-channel min-links 2` trên interface port-channel. `lacp max-bundle` và các priority không đặt ngưỡng tối thiểu."
+ },
+ "access-100": {
+  "e": "SSID có phân biệt chữ hoa chữ thường (case sensitive). Nó không phải tính năng độc quyền Cisco, không bắt buộc có số và chữ, và không định nghĩa VLAN trên switch."
+ }
+}

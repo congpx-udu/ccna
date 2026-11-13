@@ -1,0 +1,150 @@
+{
+ "access-129": {
+  "e": "Root bridge là switch có Bridge ID thấp nhất (priority trước, rồi tới MAC). Exhibit chỉ là sơ đồ nên dữ liệu nằm trong các lựa chọn: SW1 và SW3 cùng priority 32768, thấp hơn 40960 của SW2/SW4. Giữa SW1 và SW3 thì MAC 01:1c:6c:66:b7:70 của SW3 nhỏ hơn 0f:d7:9e:13:ab:82 của SW1 nên SW3 là root."
+ },
+ "access-132": {
+  "e": "Exhibit (tab Advanced của WLAN) cho thấy P2P Blocking Action = Disabled và Static IP Tunneling chưa bật. Yêu cầu client giữ nguyên IP khi di chuyển giữa các vị trí trong campus ứng với `Static IP Tunneling` được Enable. DHCP Addr. Assignment (Required), Coverage Hole Detection hay P2P Blocking không giúp client giữ IP khi roaming."
+ },
+ "access-139": {
+  "e": "LACP dùng mode active và passive, và ít nhất một bên phải là active: active-passive hình thành channel. Desirable/auto là PAgP, `mode on` là static (không tương thích với passive), và auto không chạy cùng passive của LACP."
+ },
+ "access-140": {
+  "e": "Cần trunk để mang hai VLAN, dùng dot1q, allowed VLAN 100,105 và native VLAN khác giá trị mặc định (native vlan 3). Đáp án dùng native VLAN 1 vi phạm yêu cầu nondefault, đáp án dùng ISL không phải chuẩn/không đồng bộ, và đáp án `mode access` không thể mang hai VLAN."
+ },
+ "access-145": {
+  "e": "Root bridge là switch có Bridge ID nhỏ nhất. SW3 và SW4 cùng priority 12288 (thấp hơn 28672), nên so sánh MAC: 00:10:a1:03:42:e8 của SW4 nhỏ hơn 00:10:a1:95:2b:77 của SW3, nên SW4 là root bridge."
+ },
+ "access-157": {
+  "e": "2.4 GHz với tốc độ 54 Mbps là 802.11g, nên Radio Policy (đang là All trong exhibit) phải đổi thành 802.11g only; 802.11a là băng 5 GHz. Exhibit đang tích Broadcast SSID, và để tăng bảo mật SSID thì bỏ chọn Broadcast SSID (ẩn SSID). Vì vậy tổ hợp đúng là bỏ chọn Broadcast SSID và chọn 802.11g only."
+ },
+ "access-160": {
+  "e": "Root bridge là switch có Bridge ID nhỏ nhất (priority trước, rồi tới MAC). Trong exhibit SW1 và SW4 cùng priority thấp nhất 8192; MAC của SW4 (00:24:98:6f:3b:40) nhỏ hơn SW1 (00:24:98:6f:3b:41) nên SW4 là root. SW2 (16384) và SW3 (32768) có priority cao hơn.",
+  "warn": "Đáp án SW4 đúng, nhưng cụm 'its priority is highest' dùng sai thuật ngữ: priority của SW4 thuộc nhóm thấp nhất (8192, bằng SW1) và MAC thấp hơn nên mới thắng."
+ },
+ "access-166": {
+  "e": "Để switch chỉ phản hồi chứ không khởi tạo đàm phán LACP thì cấu hình `channel-group 1 mode passive`. Active chủ động khởi tạo, còn desirable/auto thuộc PAgP."
+ },
+ "access-170": {
+  "e": "Exhibit cho thấy SW1 cấu hình `channel-group 2 mode passive` trên Gi0/1 và Gi0/2, tức LACP passive. Để hình thành LACP EtherChannel thì SW2 phải là `mode active` trên cả hai cổng (passive-passive không lên). Số channel-group chỉ có ý nghĩa cục bộ nên dùng group 1 vẫn được; desirable/auto là PAgP còn `mode on` là static, không đàm phán với LACP."
+ },
+ "access-171": {
+  "e": "Cả SW3 và SW4 có priority thấp nhất là 4096. Khi priority bằng nhau, switch có MAC thấp nhất thắng: SW4 (0C:0A:05:22:05:97) thấp hơn SW3 (0C:0A:18:81:B3:19), nên SW4 là root bridge."
+ },
+ "access-172": {
+  "e": "SW3 và SW4 cùng priority thấp nhất là 8192. So sánh MAC: 0C:0A:18:A1:B3:19 của SW4 nhỏ hơn 0C:0A:A8:1A:3C:9D của SW3, nên SW4 là root bridge."
+ },
+ "access-173": {
+  "e": "SW3 và SW4 có priority 4096 (thấp nhất). So sánh MAC: SW3 0C:0B:15:1A:3C:9D nhỏ hơn SW4 0C:B0:18:A1:B3:19 (byte thứ hai 0B < B0), nên SW3 là root bridge."
+ },
+ "access-174": {
+  "e": "SW2 có priority thấp nhất là 4096 nên là root bridge, không cần so sánh MAC."
+ },
+ "access-182": {
+  "e": "Uplink hiện chỉ cho phép VLAN 1,22. Để thêm VLAN 23 mà không ảnh hưởng VLAN 22 cần `switchport trunk allowed vlan add 23`. Các lệnh không có add sẽ ghi đè danh sách và làm mất VLAN 1/22."
+ },
+ "access-186": {
+  "e": "SSID cho phép client không dây kết nối tới một mạng không dây cụ thể. Nó không phải mật khẩu, không bảo vệ chống spyware và không định danh WLC."
+ },
+ "ipsvc-4": {
+  "e": "VLAN 200 dùng subnet 192.168.100.32/27, nên ACL phải permit đúng dải đó với wildcard 0.0.0.31 để chỉ PAT cho VLAN 200. VLAN 100 (192.168.100.0/27) không nằm trong ACL nên không bị NAT và giữ nguyên địa chỉ của mình. Các đáp án còn lại permit địa chỉ public 209.165.201.2 hoặc cả dải 192.168.100.0/24 (bao gồm cả VLAN 100), đều sai yêu cầu."
+ },
+ "ipsvc-7": {
+  "e": "Lệnh `ntp master <stratum>` biến Router2 thành NTP server dựa vào đồng hồ nội bộ (không đồng bộ từ nguồn ngoài), nên đáp án `ntp master 4` đúng. `ntp server` chỉ làm Router2 thành client của nguồn khác, `ntp passive` chỉ là chế độ của association symmetric. Ngoài ra 172.17.0.1 là loopback của chính Router2 nên không dùng làm server được."
+ },
+ "ipsvc-21": {
+  "e": "Khi bật DHCP snooping, mọi cổng mặc định là untrusted và sẽ chặn DHCPOFFER/ACK đến từ cổng đó. Vì vậy cần cấu hình `ip dhcp snooping trust` trên interface nối tới DHCP server để cho phép phản hồi của server đi qua tới client. Server và client cùng switch/VLAN nên không cần relay (`ip dhcp relay information option` không giải quyết vấn đề này)."
+ },
+ "ipsvc-23": {
+  "e": "Cấu hình đã có `ip nat inside source` và ACL nhưng chưa đánh dấu interface nào là inside hay outside, nên NAT không hoạt động. Cần thêm `ip nat inside` trên interface hướng PC và `ip nat outside` trên interface hướng Internet. Overload và ACL số 1 đã đúng, và việc dùng interface GigabitEthernet0/1 (outside) là hợp lý."
+ },
+ "ipsvc-27": {
+  "e": "PC kết nối Gi0/0 và DHCP server ở subnet khác (172.16.2.2), nên cần relay: `ip helper-address 172.16.2.2` trên interface phía client (Gi0/0) để chuyển broadcast thành unicast tới server. `ip address dhcp` làm router thành client, `smart-relay` và `relay information` không phải điều kiện cơ bản để relay hoạt động."
+ },
+ "ipsvc-29": {
+  "e": "NAT overload dùng ACL NAT_INSIDE_RANGES để xác định địa chỉ nào được dịch, hiện chỉ permit 10.10.10.0/24 (VLAN 100). Cần cập nhật ACL thêm `permit 10.10.20.0 0.0.0.255` cho VLAN 200. Interface inside/outside đã đặt đúng (subinterface của Gi0/1 nằm trong inside), không cần pool hay static NAT."
+ },
+ "ipsvc-39": {
+  "e": "PAT dùng đúng một địa chỉ 209.165.202.129 nên pool chỉ chứa 1 IP (netmask 255.255.255.255), kèm `overload`. ACL phải permit 192.168.1.0 với wildcard mask 0.0.0.255 (ACL dùng wildcard, không dùng subnet mask). Các đáp án khác dùng pool private 192.168.0.0 sai hoặc dùng mask 255.255.255.0 trong ACL."
+ },
+ "ipsvc-50": {
+  "e": "DHCP server nằm ở VLAN 20 (192.168.20.2), còn client ở VLAN 10, nên SW1 phải relay: đặt `ip helper-address 192.168.20.2` trên SVI VLAN 10. Địa chỉ trỏ tới là IP của DHCP server chứ không phải gateway của VLAN."
+ },
+ "ipsvc-62": {
+  "e": "Trong exhibit, ba gói AF31, AF21, AF11 vào Gi0/0 và ra Gi0/1 vẫn giữ nguyên nhãn AF, nên R1 không làm marking. Không có gói nào bị drop hay giới hạn tốc độ nên cũng không phải policing, và hình không thể hiện việc làm mượt lưu lượng như shaping. Các class được xếp hàng và lập lịch ra cùng một interface đầu ra, đó là hành vi queuing."
+ },
+ "ipsvc-95": {
+  "e": "150,000 kết nối đồng thời cần nhiều port: mỗi IP public có khoảng 64k port nên cần ít nhất 3 địa chỉ (3 IP cho khoảng 196k port). Dùng pool 3 địa chỉ 209.165.201.1-.3 với `ip nat inside source list HQC pool NATPOOL overload` vừa đủ lại tiết kiệm IP public nhất. Pool 5 địa chỉ dùng thừa, còn `outside source` là sai hướng NAT."
+ },
+ "ipsvc-97": {
+  "e": "Máy tính ở mạng 172.20.1.0/24 nối với g0/1 của CPE, còn DHCP server là 172.20.255.11, nên cần `ip helper-address 172.20.255.11` trên g0/1 (interface phía client) để relay broadcast tới server. Các đáp án khác đặt trên g0/0 hoặc trỏ tới địa chỉ không phải server."
+ },
+ "sec-3": {
+  "e": "Exhibit là ACL 101 áp dụng inbound trên Ethernet0/0 (10.1.1.25), hiện đang cho phép `tcp ... eq telnet` từ 10.1.1.0/24 tới 172.16.1.0/24, tức quản trị VTY dạng clear-text. Để bảo mật truy cập VTY thì chỉ cho phép SSH: `access-list 101 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq ssh` (TCP 22, có mã hóa). `scp` không phải keyword port hợp lệ, `https` (443) không phải dịch vụ VTY, còn telnet không an toàn."
+ },
+ "sec-4": {
+  "e": "Cần permit mạng 10.100.100.0/24 (cổng Gi0/0) và deny mạng 192.168.0.0/16 (cổng Gi0/1). Wildcard mask của /24 là 0.0.0.255 và của /16 là 0.0.255.255, nên đáp án dùng `permit 10.100.100.0 0.0.0.255` và `deny 192.168.0.0 0.0.255.255` với standard ACL số 99 là đúng. Đáp án dùng wildcard 0.255.255.255 sẽ khớp cả /8; ACL số 100 và 199 thuộc dải extended nên không dùng được với cú pháp standard này."
+ },
+ "sec-23": {
+  "e": "Access-list 10 chỉ có `deny host 10.150.1.1` và có implicit deny any ở cuối, nên PC-2 cũng bị chặn khi Telnet qua `access-class 10 in`. Thêm `access-list 10 permit any` sẽ cho phép các host còn lại mà vẫn chặn PC-1. Gỡ access-class sẽ cho cả PC-1 vào, còn `ip access-group` trên g0/0 và password command không giải quyết vấn đề này."
+ },
+ "sec-26": {
+  "e": "Để router nhận kết nối từ xa an toàn (SSH) cần tạo user cục bộ (`username cisco password 0 cisco`) cho `login local` và tạo khóa bằng `crypto key generate rsa`. `transport input telnet` là không an toàn, `login console` không dùng cho remote và `ip ssh pubkey-chain` chỉ dùng cho xác thực bằng khóa công khai."
+ },
+ "sec-39": {
+  "e": "Để bật SSHv2 trên R15 cần tối thiểu: hostname khác mặc định, `ip domain-name`, tạo khóa RSA (modulus 1024 trở lên), `ip ssh version 2` và `transport input ssh` trên line vty. Đáp án đúng là cái đầy đủ cả hostname lẫn domain-name; các đáp án khác thiếu domain-name hoặc dùng `transport input all`, không đảm bảo chỉ SSH."
+ },
+ "sec-42": {
+  "e": "802.11w là Protected Management Frames (PMF), nên để bật nó trên WLAN cần đặt PMF thành Required (hoặc Optional) trong phần Layer 2 Security. MAC Filtering, WPA Policy và Fast Transition là các tính năng khác, không bật 802.11w."
+ },
+ "sec-43": {
+  "e": "Để WLC xác thực client không dây (network users) qua RADIUS server, cần bật tùy chọn Network User trên server RADIUS đã thêm. Management dùng cho xác thực quản trị, Support for CoA là tính năng Change of Authorization, còn tắt Server Status sẽ vô hiệu server."
+ },
+ "sec-47": {
+  "e": "Để có mã hóa và xác thực mạnh nhất bằng domain credentials (LDAP), chọn WPA + WPA2 trên Layer 2 security và chọn 802.1x trong Authentication Key Management (Enterprise). PSK chỉ dùng mật khẩu chung, còn TKIP và Static-WEP yếu."
+ },
+ "sec-60": {
+  "e": "Yêu cầu: MAC học động và chỉ ghi log mà không tắt interface. Dùng `switchport port-security maximum 2` để cho học động tối đa 2 MAC và `violation restrict` để drop gói vi phạm và ghi log nhưng không err-disable. `violation shutdown` sẽ tắt cổng, còn cấu hình MAC tĩnh hoặc sticky không đáp ứng yêu cầu học động thuần."
+ },
+ "sec-61": {
+  "e": "Exhibit (Local Net Users > New) đang tích Guest User với Lifetime 86400 giây, nên user bị giới hạn thời gian truy cập. Cần bỏ chọn Guest User để đây là user thường trong local database (dùng cho local EAP) và không còn lifetime. Xoá hay đặt Lifetime về 0 khi vẫn là guest không đúng cách, và Guest User Role không liên quan yêu cầu."
+ },
+ "sec-63": {
+  "e": "Để chỉ PC1 dùng cổng: đặt `switchport mode access` (không dùng VLAN tagging/trunk), bật `switchport port-security` và gán MAC tĩnh `0050.7966.6800`. Các đáp án dùng `nonegotiate`, `dynamic desirable` hoặc `dynamic auto` không đảm bảo cổng ở chế độ access, và port-security không áp dụng được trên cổng dynamic."
+ },
+ "sec-66": {
+  "e": "Exhibit hiện đang là WPA+WPA2 Enterprise với MAC Filtering được tích và WPA TKIP/802.1X. Guest web authentication là Layer 3 security nên ở Layer 2 phải đặt Layer 2 Security thành None và bỏ chọn MAC Filtering, rồi mới bật Authentication ở tab Layer 3. Personal, đổi TKIP sang CCMP hay chuyển WPA sang WPA2 đều vẫn là bảo mật Layer 2, không phù hợp web auth."
+ },
+ "sec-97": {
+  "e": "PC2 (192.168.2.10) cần bị chặn tới file server nhưng vẫn truy cập host khác. Đặt ACL trên R2 interface g0/1 (hướng tới server) outbound với `deny 192.168.2.10` rồi `permit any`, nên chỉ lưu lượng của PC2 tới server bị chặn. Các đáp án khác permit duy nhất PC2, deny sai host hoặc đặt ở hướng/interface làm chặn thêm các đích khác."
+ },
+ "sec-112": {
+  "e": "Để tạo SSID WPA2-PSK, cần chọn mã hóa AES (CCMP128) cho WPA2/WPA3 Encryption và chọn PSK cho Auth Key Management. 802.1x dùng cho Enterprise (RADIUS); AES là kiểu mã hóa chứ không phải tùy chọn của Auth Key Management."
+ },
+ "sec-121": {
+  "e": "Để cấu hình WPA2-PSK với AES trên WLC: chọn PSK trong Auth Key Mgmt, định dạng PSK là ASCII và nhập key, đồng thời chọn WPA2 Policy và AES. Không chọn TKIP (không cần), CCKM là cho roaming enterprise, và không được để Auth Key Mgmt trống."
+ },
+ "sec-130": {
+  "e": "Exhibit đang là WPA+WPA2 Personal, MAC Filtering và AutoConfig iPSK chưa bật. Để RADIUS phục vụ mọi thiết bị, kể cả thiết bị không hỗ trợ dot1x, cần bật AutoConfig iPSK ở tab Layer 2 (mỗi thiết bị có PSK riêng do RADIUS cấp) và chọn Authentication server ở tab AAA Servers. Enterprise (802.1X) không phù hợp vì một số client không hỗ trợ dot1x."
+ },
+ "sec-136": {
+  "e": "ACL sai vì source/destination bị đặt ngược (cần source 10.0.10.0/26 và destination 10.0.20.0/26) và thiếu `permit ip any any` ở cuối do implicit deny sẽ chặn mọi traffic khác. Đặt permit ở đầu sẽ làm các lệnh deny không bao giờ được khớp."
+ },
+ "sec-143": {
+  "e": "Web Passthrough là Layer 3 Web Policy nên Layer 2 Security phải đặt là None. Exhibit hiện đang chọn WPA+WPA2 với WPA2 AES và 802.1X, cấu hình Layer 2 này mâu thuẫn với web policy. Bật thêm WPA, TKIP/CCMP256 hay đặt 802.1X vẫn là Layer 2 security, không đáp ứng yêu cầu."
+ },
+ "sec-149": {
+  "e": "Exhibit là WPA2 Personal với PSK format ASCII; PSK và PSK-SHA2 đều chưa được Enable. Yêu cầu dùng preconfigured key, không qua AAA server và có thuật toán hash an toàn tương ứng với bật PSK-SHA2 trong Authentication Key Management. Định dạng HEX hay CCMP128 chỉ là dạng key/mã hóa, còn iPSK phụ thuộc RADIUS nên không phù hợp."
+ },
+ "auto-4": {
+  "e": "Code trong exhibit gọi `m.get_config('running')` không có filter, nên server trả về toàn bộ running-config. Để chỉ lấy cấu hình interface, tạo một XML filter (NETCONF dùng XML) dạng chuỗi và truyền vào `get_config()` làm tham số. Parse bằng thư viện xml hoặc JSON chỉ xử lý dữ liệu sau khi đã nhận về, không giảm lượng dữ liệu server gửi, và NETCONF không dùng JSON filter."
+ },
+ "auto-31": {
+  "e": "Cú pháp `cisco_ospf_vrf {\"R1 default\": ensure => 'present', auto_cost => '100'}` dùng khai báo resource với dấu `=>`, đặc trưng của Puppet manifest. Chef dùng Ruby recipe, Ansible dùng YAML playbook, còn JSON dùng cặp key:value với dấu hai chấm."
+ },
+ "auto-32": {
+  "e": "Trong output, \"Routers\" và \"Switches\" là key, còn mảng [\"R1\",\"R2\",\"R3\"] là value của key đó. \"R1\" và \"SW1\" là các phần tử string nằm trong array, tức là value. Chúng không phải key hay object."
+ },
+ "auto-38": {
+  "e": "Đếm các cặp `{}` trong JSON (kể cả cặp ngoài cùng bao toàn bộ dữ liệu, dù exhibit chỉ hiện từ `aaaUser`): object ngoài cùng, aaaUser, attributes của aaaUser, phần tử trong children đầu, aaaUserRole (ExampleCisco), attributes của nó, phần tử trong children thứ hai, aaaUserRole (admin) và attributes của nó, tổng cộng 9 object. Các `[]` là array nên không tính."
+ }
+}

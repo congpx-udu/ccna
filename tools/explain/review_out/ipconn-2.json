@@ -1,0 +1,99 @@
+{
+ "ipconn-52": {
+  "e": "LAN của R3 là 10.0.15.0/24 nên route phải dùng mask 255.255.255.0, và next hop là IP của R3 trên segment chung 10.0.20.0/24 (10.0.20.3). Next hop 10.0.20.1 là chính R1, còn mask /26 hay đích 10.0.0.64 là mạng của R1, không phải LAN của R3."
+ },
+ "ipconn-54": {
+  "e": "Host route là route /32 tới đúng một host: `ip route 10.10.10.10 255.255.255.255 192.168.0.2`, với 192.168.0.2 là S0/0 của Router 2 (next hop từ Router 1). Mask /24 hay 0.0.0.0 chỉ là network/default route, còn lệnh đảo đích và next hop là sai."
+ },
+ "ipconn-57": {
+  "e": "R1 có hai default route: `0.0.0.0/0 via 172.16.20.2` (AD 1 mặc định) và `0.0.0.0/0 via 10.0.0.2` với AD 20 (floating). Khi mọi link hoạt động, route AD thấp hơn thắng nên packet từ PC1 đi tới 172.16.20.2 (R3). Không có round robin vì hai route có AD khác nhau; route AD 20 chỉ là dự phòng."
+ },
+ "ipconn-64": {
+  "e": "Muốn load-balance qua hai ISP, hai default route phải có cùng AD (hai lệnh `ip route 0.0.0.0 0.0.0.0` tới 198.51.100.1 và 203.0.113.1 không chỉ định AD) để tạo ECMP. Bộ lệnh có thêm route chia đôi dải 0.0.0.0/1 và 128.0.0.0/1 cũng chia tải theo địa chỉ đích. Các lệnh có AD khác nhau (AD 2, AD 255) là floating static route, chỉ để failover chứ không load-balance."
+ },
+ "ipconn-72": {
+  "e": "PC 10 là 10.80.65.10 nằm sau R86, và R86 Fa0/0 có IP 10.73.65.66 trên link tới R14. Host route dùng mask /32 và next hop là R86: `ip route 10.80.65.10 255.255.255.255 10.73.65.66`. Các lệnh khác dùng mask không phải /32, wildcard, hoặc đảo đích và next hop."
+ },
+ "ipconn-73": {
+  "e": "Mạng 172.16.34.0/29 có mask 255.255.255.248. R86 muốn đến R14 thì next hop là IP của R14 trên link 10.73.65.64/30, tức 10.73.65.65 (R86 là .66). Các lệnh khác có mask sai (/27), đảo đích và next hop, hoặc dùng wildcard mask."
+ },
+ "ipconn-76": {
+  "e": "Theo sơ đồ, R2 có IP 192.168.2.3 và R3 có 192.168.2.2 trên segment 192.168.2.0/24; mạng 10.10.10.0/24 nằm sau R2 (g0/0) còn PC5 (10.10.10.10) nằm sau R3. Vì vậy cần route `ip route 10.10.10.0 255.255.255.0 192.168.2.3` (cả mạng qua R2) và host route `ip route 10.10.10.10 255.255.255.255 192.168.2.2` (riêng PC5 qua R3, ưu tiên nhờ longest match). Các route /29 hoặc dùng interface thoát g0/1 không phủ đúng mạng/host."
+ },
+ "ipconn-81": {
+  "e": "Các subnet trong sơ đồ: 10.88.31.64/26 (broadcast .127, last usable .126), 10.19.63.80/28 (.80-.95, last usable .94) và 10.23.98.128/27 (.128-.159, last usable .158). Bộ cấu hình đúng dùng 10.88.31.126, 10.19.63.94 và 10.23.98.158, đều là địa chỉ ngay trước broadcast. Các bộ còn lại dùng địa chỉ broadcast (.127, .95, .159), nên không hợp lệ cho interface."
+ },
+ "ipconn-82": {
+  "e": "R1 cần route tới mạng 172.25.25.0/24 ở New Office phía sau R2, với next hop là IP của R2 trên link 192.168.2.0/30, tức 192.168.2.2. Next hop 192.168.2.1 là chính R1, còn route /32 chỉ tới một host (172.25.25.1) chứ không phủ cả mạng."
+ },
+ "ipconn-86": {
+  "e": "Floating static route phải có AD cao hơn RIP (120) để chỉ được dùng khi RIP route mất: `ip route 192.168.23.0 255.255.255.0 192.168.13.3 121`, next hop 192.168.13.3 là R3 trên link 192.168.13.0/24. AD mặc định 1 hoặc AD 100 thấp hơn 120 sẽ đè lên RIP, còn mask /32 không khớp mạng 192.168.23.0/24."
+ },
+ "ipconn-93": {
+  "e": "R14 và R86 nối bằng link 10.73.65.64/30, để DR là R14 thì cần `ip ospf priority 255` trên R14, và để lên adjacency thì MTU hai bên phải giống nhau (1500). Cấu hình đúng kích hoạt OSPF bằng `ip ospf 10 area 0` trên interface, MTU 1500 cả hai đầu, priority 255 ở R14. Cấu hình đặt priority 0 trên R14 thì R14 không bao giờ làm DR; hai cấu hình còn lại có MTU lệch nhau (1500 và 1400) nên adjacency kẹt ở ExStart/Exchange."
+ },
+ "ipconn-101": {
+  "e": "Đích 10.225.34.225 khớp 10.0.0.0/8 (via 10.224.1.2), 10.128.0.0/9 (via 10.224.1.3), 10.224.0.0/11 (via 10.224.1.5, dải 10.224-10.255) và 10.224.0.0/15 (via 10.224.1.4, dải 10.224-10.225). Router chọn longest prefix match là /15 với next hop 10.224.1.4, chính là router C. Route /11 (router D), /9 (router B), /8 (router A) đều kém cụ thể hơn."
+ },
+ "ipconn-103": {
+  "e": "Để R14 đưa 10.120.10.0/24 vào OSPF process 100 area 0 cần `network 10.120.10.0 0.0.0.255 area 0` trong `router ospf 100`. Lệnh network dùng wildcard mask (không phải subnet mask) và có cú pháp `network <địa chỉ> <wildcard> area <id>`; thứ tự phải đúng, process ID là 100 theo sơ đồ, không cần static route."
+ },
+ "ipconn-104": {
+  "e": "Bốn mạng 10.1.40.0/25, 10.1.40.128/25, 10.1.40.176/28 và 10.1.41.224/29 nằm trong dải 10.1.40.0 - 10.1.41.255. Summary nhỏ nhất bao trùm tất cả là 10.1.40.0/23, vì mạng 10.1.41.224/29 nằm ngoài 10.1.40.0/24. Các prefix /24 hoặc /25 không phủ hết các mạng."
+ },
+ "ipconn-109": {
+  "e": "Trên segment multi-access, DR là router có OSPF priority cao nhất; nếu bằng nhau mới xét router ID cao nhất. R4 có priority 204 lớn nhất (R1 108, R3 106, R2 1) nên được bầu làm DR khi tất cả boot đồng thời. Nhãn DR ghi sẵn cạnh R1 không quyết định kết quả vì câu hỏi nói các thiết bị khởi động cùng lúc."
+ },
+ "ipconn-110": {
+  "e": "Đích 10.227.151.255 khớp 10.0.0.0/8 (static, via 10.224.4.2), 10.128.0.0/9 (static, via 10.224.4.3) và 10.224.0.0/11 (BGP, dải 10.224-10.255, via 10.224.4.5). Route /15 chỉ phủ 10.224-10.225 nên không khớp. Longest match là /11 với next hop 10.224.4.5, chính là router D."
+ },
+ "ipconn-111": {
+  "e": "DNS server thật nằm ở 196.1.38.132, nhưng host chỉ cấu hình preferred DNS là 192.168.1.254 (interface router, không phải DNS server) và alternate 196.1.38.254 (sai địa chỉ). Vì vậy host không phân giải được tên miền nên không ra internet được. IP 192.168.1.1/24 và default gateway 192.168.1.254 đều đúng."
+ },
+ "ipconn-117": {
+  "e": "Host C là 192.168.1.3/24 nhưng default gateway cấu hình là 192.168.1.1, đó là địa chỉ của Host A; gateway thật là Router A G0/0 192.168.1.254. Gateway sai nên host không gửi được traffic ra ngoài subnet, còn IP/mask và DNS (8.8.8.8) đều đúng."
+ },
+ "ipconn-118": {
+  "e": "Với reference bandwidth 100 Gb: link 10Gig có cost 10, link 100Gig có cost 1. Đường Y-C-D-A-B-F có cost 10+1+1+1+1 = 14, thấp nhất. Các đường khác: Y-E-F = 20, Y-E-B-F = 21, Y-C-D-A-F = 10+1+1+10 = 22, nên OSPF chọn Y > C > D > A > B > F."
+ },
+ "ipconn-119": {
+  "e": "VLAN 10 dùng 10.0.0.0/15 (SVI 10.0.0.1/15) nên subnet mask là 255.254.0.0, dải host 10.0.0.1 - 10.1.255.254. Client chạy Linux dùng `ifconfig` (Windows mới dùng `ipconfig`) để kiểm tra IP và mask nằm đúng trong subnet 255.254.0.0. Mask 255.255.128.0 hay dải /16 đều sai với /15."
+ },
+ "ipconn-121": {
+  "e": "VLAN 3 dùng 10.10.2.1/23, nên subinterface router-on-a-stick cần `encapsulation dot1Q 3` và IP 10.10.2.10 mask 255.255.254.0 (/23). Số subinterface (.10) chỉ là nhãn, điều quan trọng là tag dot1Q khớp VLAN 3. Các lựa chọn khác sai mask (/22, /30), sai tag VLAN, hoặc không có subinterface/encapsulation."
+ },
+ "ipconn-122": {
+  "e": "Sơ đồ cho thấy mạng của PC1 là 172.16.1.0/29 (host .1-.6, R1 G0/0 là .1 và gateway 172.16.1.1). PC1 đang dùng 172.16.1.8 với mask /28, địa chỉ .8 nằm ngoài /29 nên không cùng subnet đúng với gateway. Sửa bằng IP 172.16.1.6 và mask 255.255.255.248 để host nằm trong subnet của gateway; đổi DNS hoặc gateway không giải quyết lỗi này."
+ },
+ "ipconn-126": {
+  "e": "Workstation 1 thuộc VLAN 71 (10.0.71.0/27) và router có IP .1, nên cần IP trong subnet đó (10.0.71.16), mask 255.255.255.224, default gateway 10.0.71.1. Để truy cập server bằng FQDN thì phải có DNS server 10.0.63.5 (DNS1.lab). Các lựa chọn khác sai subnet (10.0.63.80 là của Server1), sai mask /24, dùng 10.0.71.0 (network address) làm gateway, hoặc chỉ liệt kê DHCP server."
+ },
+ "ipconn-127": {
+  "e": "Traffic internet không khớp route cụ thể nào nên dùng default route `S* 0.0.0.0/0 via 10.10.11.2` (gateway of last resort, link tới Internet 10.10.11.0/30). Các prefix còn lại là mạng cụ thể, không phải đường ra internet."
+ },
+ "ipconn-128": {
+  "e": "Đích 10.10.13.165 nằm trong 10.10.13.160/29 (dải .160-.167), route cụ thể nhất, next hop 10.10.10.5 trên Gi0/1, thuộc link 10.10.10.4/30 tới Router3. Các prefix /25 (.0-.127) và /28 (.128-.143, .144-.159) không chứa địa chỉ này, và default route chỉ dùng khi không có route cụ thể hơn."
+ },
+ "ipconn-129": {
+  "e": "Địa chỉ 172.16.32.1 khớp cả ba route: EIGRP 172.16.32.0/27, OSPF 172.16.32.0/19 và RIP 172.16.32.0/24. Router luôn chọn theo longest prefix match trước nên dùng route /27; AD và metric chỉ xét khi các prefix có độ dài bằng nhau."
+ },
+ "ipconn-130": {
+  "e": "Đích 172.16.3.14 khớp static 172.16.3.0/24 (AD 1) và OSPF 172.16.3.0/28 (dải .0-.15, AD 110). Longest prefix match chọn /28 nên gói đi qua next hop 207.165.200.254 trên Serial0/0/1, dù static có AD thấp hơn (AD chỉ xét khi prefix bằng nhau)."
+ },
+ "ipconn-138": {
+  "e": "Theo bảng route, 192.168.2.86 khớp 192.168.2.0/24 và 192.168.2.80/29 (dải .80-.87), longest match là /29 nên next hop 172.16.1.3. Với 10.20.1.50, route khớp là /24 (via 172.16.1.2), /26 (via 172.16.1.4) và 10.20.1.32/27 (dải .32-.63, via 172.16.1.3); longest match là /27 nên cũng next hop 172.16.1.3. Cả hai đích dùng chung next hop 172.16.1.3.",
+  "warn": "Theo longest prefix match, cả hai địa chỉ đều đi qua 172.16.1.3 (route /29 và /27), nên đáp án đúng là 172.16.1.3, không phải 172.16.1.2 như answer key."
+ },
+ "ipconn-140": {
+  "e": "Với reference bandwidth 10 Gbps: link 1 Gbps (10.12.0.0/30) có cost 10, link 10 Gbps (10.12.0.4/30) có cost 1; đoạn R2-R3 giống nhau cho cả hai đường. Đường qua link 10 Gbps có next hop là R2 trên link đó, 10.12.0.6, có tổng cost thấp hơn nên được chọn; 10.12.0.2 (link 1 Gbps) có cost cao hơn."
+ },
+ "ipconn-142": {
+  "e": "Route hiện tại tốt nhất là qua router A (cost 20). Khi route đó mất, router Y dùng route có cost thấp nhất trong các route còn lại: router D cost 30 (B là 40, C là 50). OSPF chọn đường có tổng cost thấp nhất."
+ },
+ "ipconn-145": {
+  "e": "Đích 172.16.0.14 không khớp 172.16.3.0/24 hay 172.16.3.0/28 (chỉ ở dải 172.16.3.x), nên chỉ khớp default route `S* 0.0.0.0/0 via 209.165.200.246`. Gói được gửi tới 209.165.200.246 qua Serial0/1/0."
+ },
+ "ipconn-146": {
+  "e": "Đích 172.16.153.154 khớp 172.0.0.0/8 (via 10.12.13.14), 172.16.0.0/16 (via 10.56.22.23) và default route. Route /32 172.16.153.153 chỉ khớp đúng host đó, không khớp .154; 122.16.153.0/24 là mạng khác. Longest match là 172.16.0.0/16 nên next hop là 10.56.22.23."
+ }
+}

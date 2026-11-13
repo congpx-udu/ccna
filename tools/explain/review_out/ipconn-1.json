@@ -1,0 +1,98 @@
+{
+ "ipconn-2": {
+  "e": "Hai PC nằm ở hai subnet khác nhau (10.10.10.0/24 và 10.10.100.0/24) nên cần thiết bị Layer 3: router nhận gói, kiểm tra địa chỉ IP đích trong routing table rồi chuyển tiếp ra interface về phía PC-B. Switch Layer 2 chỉ chuyển frame theo MAC, firewall chủ yếu lọc traffic và load balancer phân phối tải tới server, không đảm nhiệm vai trò định tuyến này."
+ },
+ "ipconn-5": {
+  "e": "Cả mạng 2001:db8:23::/64 đi qua R2 bằng `ipv6 route 2001:db8:23::/64 fd00:12::2`. Host 2001:db8:23::14 ưu tiên qua R3 nên thêm host route `ipv6 route 2001:db8:23::14/128 fd00:13::3`; nhờ longest prefix match, route /128 thắng route /64 cho riêng host này. Các lệnh dùng /128 cho cả mạng, hoặc /64 kèm địa chỉ host, hoặc thêm AD 200 đều không thỏa yêu cầu."
+ },
+ "ipconn-8": {
+  "e": "R5 đang là DR và R4 là BDR (priority mặc định 1), nên phải đặt priority cao hơn cho router khác: R3 priority 255 và R2 priority 240 (dải hợp lệ 0-255). Sau đó cần reset OSPF process (`clear ip ospf process`) vì bầu DR không preempt. Cấu hình dùng priority 259 hoặc 256 là không hợp lệ, còn các cấu hình chỉ chỉnh R4/R5 giữ nguyên hai router flapping này."
+ },
+ "ipconn-11": {
+  "e": "Theo hình, link giữa hai router là 209.165.200.0/24 với R1 là .225 và R2 là .226. Mỗi router cần default route trỏ next hop về địa chỉ của router đầu kia: R1 dùng `ip route 0.0.0.0 0.0.0.0 209.165.200.226`, R2 dùng `ip route 0.0.0.0 0.0.0.0 209.165.200.225`. Cấu hình đảo next hop trỏ về chính IP của mình nên sai; các cấu hình dùng địa chỉ host với mask /24 (192.168.1.1, 10.1.1.1) là không hợp lệ."
+ },
+ "ipconn-13": {
+  "e": "Router A đã có default route chính qua Router B (192.168.2.2). Floating static route dự phòng đi qua Router C (192.168.1.2) với AD cao hơn: `ip route 0.0.0.0 0.0.0.0 192.168.1.2 10` (AD 10 > AD 1 của static chính), chỉ vào routing table khi route chính mất. Thiếu AD thì thành static thường (AD 1), next hop 192.168.2.1 không phải router nào trong hình, còn `ip default-gateway` dùng cho thiết bị không định tuyến."
+ },
+ "ipconn-14": {
+  "e": "Route chính qua R3 (next hop 209.165.201.5) có AD mặc định 1, nên backup qua R2 phải có AD lớn hơn 1: `ip route 0.0.0.0 0.0.0.0 g0/1 6` (g0/1 là cổng nối R2) là floating static route AD 6. AD 1 sẽ load-balance với route chính. Lệnh dùng next hop 209.165.201.5 là R3 (không phải R2), còn 209.165.200.226 là chính địa chỉ g0/1 của R1."
+ },
+ "ipconn-15": {
+  "e": "Cần một host route /32 (mask 255.255.255.255) tới 172.16.2.2 trên R1: `ip route 172.16.2.2 255.255.255.255 gi0/0`. Route /32 có prefix dài nhất nên thắng mọi route khác tới mạng 172.16.2.0/24. Các lệnh /24 dùng next hop 192.168.1.15 (R2) hay 192.168.1.5 (chính R1) không phải host route; lệnh /29 với địa chỉ host 172.16.2.2 là mask/network không hợp lệ."
+ },
+ "ipconn-18": {
+  "e": "Đích 10.0.1.15 khớp 10.0.1.0/24 (connected Serial0 và OSPF via 192.168.0.4) và 10.0.1.0/28 (dải .0-.15, EIGRP [90/10] via 192.168.0.7). Longest prefix match được xét trước AD/metric, nên route /28 được chọn dù AD 90 cao hơn connected, và next hop là 192.168.0.7. Các /32 (10.0.1.3, 10.0.1.190) không chứa đích."
+ },
+ "ipconn-19": {
+  "e": "Router có OSPF priority cao nhất trong segment sẽ thắng bầu DR (router ID chỉ dùng để phá hòa). Do đó phải đặt interface của router A có priority cao nhất trong area. Đặt priority thấp nhất làm A khó thành DR, còn fixed router ID hay khai báo neighbor không quyết định kết quả bầu."
+ },
+ "ipconn-20": {
+  "e": "Tính theo hình có 923, 225 và 3641 host, cộng tối đa 10% tăng trưởng: R7 cần /22 (1022 host, vì 923x1.1 ≈ 1015), R8 cần /24 (254 host), R9 cần /20 (4094 host). Cấu hình đúng là R7 mask 255.255.252.0, R8 mask 255.255.255.0, R9 mask 255.255.240.0. Các cấu hình khác có mask quá nhỏ (không đủ host) hoặc quá lớn (lãng phí địa chỉ)."
+ },
+ "ipconn-21": {
+  "e": "Trong bảng routing, route EIGRP có mã D: `D 192.168.2.0/24 [90/84437]` via 207.165.200.254 (AD 90). Các prefix còn lại: 192.168.1.0/24 là OSPF (O, 110), 172.16.2.0/24 là RIP (R, 120), 207.165.200.244/30 là static; 172.16.0.0/16 và 207.165.200.0/24 chỉ là dòng tiêu đề nhóm subnet, không phải route."
+ },
+ "ipconn-25": {
+  "e": "Hiện R1 chỉ là DROTHER (R2 là BDR, R3 là DR, priority đều 1). Để R1 thành DR: đặt `ip ospf priority 200` trên fa0/0 của R1 và đặt priority 0 trên fa0/0 của R3 để R3 không tham gia bầu (cần reset OSPF process để bầu lại). Priority 0 trên R1 làm R1 không bao giờ thành DR, priority 200 trên R3 làm R3 giữ vai trò DR, còn router-id không thắng được priority."
+ },
+ "ipconn-26": {
+  "e": "Cần 380 user (đã tính 30% tăng trưởng) nên dùng /23 (510 host): subnet 10.7.54.0, mask 255.255.254.0, broadcast 10.7.55.255, dải usable 10.7.54.1 - 10.7.55.254. Các đáp án khác có broadcast hoặc mask (/24, /17) không khớp với dải usable 10.7.54.1 - 10.7.55.254."
+ },
+ "ipconn-27": {
+  "e": "Trong hình, bình thường R1 học 10.1.1.0/24 qua OSPF (AD 110) từ 172.16.2.2 trên Gi0/0, còn khi outage thì mất route. Cần static dự phòng có AD cao hơn 110 (ở đây 125) đi ra Gi0/0 phía R2: `ip route 10.1.1.10 255.255.255.255 gi0/0 125`. Gi0/1 là mạng Management nên sai hướng; AD 100 thấp hơn OSPF sẽ lấn át OSPF."
+ },
+ "ipconn-28": {
+  "e": "Link point-to-point giữa R1 (Se0/1 .1) và R2 (Se0/1 .2) thuộc 10.0.0.0/30, nên lệnh `network 10.0.0.0 0.0.0.255 area 0` (dùng wildcard mask) sẽ đưa interface thuộc dải này vào OSPF area 0. `neighbor`, `ip ospf priority` và `router-id` không kích hoạt OSPF trên interface."
+ },
+ "ipconn-31": {
+  "e": "Mạng đích 172.21.34.0/25 có mask 255.255.255.128, và next hop là địa chỉ đầu kia trên link 10.73.65.64/30, tức R86 Fa0/0 là 10.73.65.66 (R14 là .65). Các đáp án khác dùng sai mask (/26, /24, /17) hoặc trỏ về chính R14 (10.73.65.65) hoặc địa chỉ mạng (.64)."
+ },
+ "ipconn-32": {
+  "e": "Route chính là static default thường (AD 1) trỏ tới next hop 192.168.0.2 trên cổng ra primary ISP: `ip route 0.0.0.0 0.0.0.0 192.168.0.2`. Floating static route backup (qua G1/1) sẽ cấu hình AD cao hơn. Các từ khóa `tracked` và `floating` không tồn tại trong cú pháp lệnh `ip route`."
+ },
+ "ipconn-33": {
+  "e": "Trong hình, R3 nối vào mạng 10.0.4.0/24 bằng Gig0/1 (Gig0/0 sang 10.0.3.0/24). R2 có priority 99 còn R1/R3 mặc định 1, nên R3 cần priority cao hơn 99 trên Gig0/1, ví dụ `ip ospf priority 100`. Priority 0 hoặc 1 không thắng, và Gig0/0 là interface sang mạng khác."
+ },
+ "ipconn-34": {
+  "e": "Host 10.10.13.158 nằm trong 10.10.13.144/28 (dải .144-.159). Route này học qua OSPF via 10.10.10.9 (Gi0/2). Các route khác không chứa host: /25 là .0-.127, /29 là .160-.167; default route S* 0.0.0.0/0 kém cụ thể hơn. Vậy next hop là 10.10.10.9."
+ },
+ "ipconn-35": {
+  "e": "Đích 10.0.10.0/24 có hai route cùng prefix: OSPF [110/10] via 10.0.1.4 (Gi0/0) và EIGRP [90/10] via 10.0.1.5 (Gi0/1). Router chọn route có administrative distance thấp hơn, tức EIGRP (90), nên next hop là 10.0.1.5."
+ },
+ "ipconn-36": {
+  "e": "Backup (floating) static route phải có AD cao hơn OSPF (110), nên dùng AD 111: `ip route 192.168.20.0 255.255.255.0 192.168.30.2 111` (192.168.30.2 là R3). AD 90 hay AD mặc định 1 sẽ thắng OSPF; mask /16 là sai mạng 192.168.20.0/24."
+ },
+ "ipconn-37": {
+  "e": "Primary route là OSPF (AD 110) qua link 172.16.0.0/30 (Gi0/0). Secondary route phải đi qua link 172.16.0.4/30 (R1 .5 - R2 .6), có AD lớn hơn 110 và mask đúng với LAN: R1 `ip route 172.16.2.0 255.255.255.224 172.16.0.6 111` (LAN R2 là /27) và R2 `ip route 172.16.1.0 255.255.255.0 172.16.0.5 112`. Các lựa chọn khác dùng next hop .2/.1 (link chính), AD 89 hoặc 110 (không lớn hơn OSPF), hoặc mask sai (/28, /29)."
+ },
+ "ipconn-38": {
+  "e": "R1 là DROTHER, muốn thành DR thì phải tăng priority trên interface của chính R1 lên cao nhất (200) rồi `clear ip ospf process` để bầu lại (DR không tự preempt). Đặt priority 1 là mặc định, và đổi priority trên R2/R3 không giúp R1."
+ },
+ "ipconn-39": {
+  "e": "Yêu cầu: không tham gia bầu DR nên `ip ospf priority 0`; router-id 10.1.1.1; chỉ neighbor với R2 (10.100.1.2) nên ACL 102 permit protocol 89 (OSPF) từ host 10.100.1.2 tới 224.0.0.5, deny các gói OSPF khác và `permit ip any any` cho traffic còn lại, áp `ip access-group 102 in`. Cấu hình có priority 0, ACL dùng protocol 89 và permit ip any any là đúng. Các cấu hình khác dùng priority 100, hoặc ACL protocol 88 (đó là EIGRP, không lọc OSPF), hoặc thiếu `permit ip any any`."
+ },
+ "ipconn-41": {
+  "e": "Router Cisco dùng cú pháp `ip route <network> <subnet mask> <next-hop>`. Mạng 10.0.3.0/24 nằm sau R3, nối R1 qua segment 10.0.4.0/24 nên next hop là R3 10.0.4.3: `ip route 10.0.3.0 255.255.255.0 10.0.4.3`. `route add` là cú pháp Windows, và wildcard mask 0.255.255.255 không dùng cho `ip route`."
+ },
+ "ipconn-42": {
+  "e": "Mỗi router đã có default route chính (AD 1) qua link chính (10.10.10.2 / 10.10.10.1). Để failover dùng floating static default route với AD cao hơn (2) trỏ qua link phụ: R1 `ip route 0.0.0.0 0.0.0.0 10.10.10.6 2` và R2 `ip route 0.0.0.0 0.0.0.0 10.10.10.5 2`. Không có AD thì thành AD 1, cạnh tranh với route chính; các host route là sai đích hoặc next hop."
+ },
+ "ipconn-45": {
+  "e": "Lệnh `network` dùng wildcard mask, không phải subnet mask. Link R1-R2 là 10.0.0.0/30 nên dùng `network 10.0.0.0 0.0.0.3 area 0`, LAN của R1 theo hình là 10.0.1.0/24 nên dùng `network 10.0.1.0 0.0.0.255 area 0`. Các lựa chọn khác dùng 10.0.2.0 (LAN của R2), subnet mask 255.255.255.0 hoặc wildcard sai 0.0.0.252."
+ },
+ "ipconn-47": {
+  "e": "Trong hình R1 (RID 192.168.2.8, cao nhất) đang là DR, R3 là BDR. Để R2 thành DR phải tăng OSPF priority của R2 lên cao hơn mặc định 1, ví dụ `ip ospf priority 100` trên gi0/0 (rồi reset OSPF process để bầu lại). Priority 1 không đổi gì, còn đổi router-id không đáng tin vì priority được so sánh trước router ID và DR không tự preempt."
+ },
+ "ipconn-48": {
+  "e": "Đích 10.1.2.126 khớp ba route: 10.1.2.0/24 (EIGRP), 10.1.2.0/25 (EIGRP via 10.145.20.126) và static 10.1.2.112/28 (dải .112-.127) via 10.165.20.166. Route /28 có prefix dài nhất nên được chọn, next hop 10.165.20.166. Longest prefix match được xét trước administrative distance."
+ },
+ "ipconn-49": {
+  "e": "Theo hình, R2 (qua link 172.16.0.0/24) nối cùng switch với PC1 10.0.0.5, và R3 qua link 192.168.0.0/24. Yêu cầu: cả 10.0.0.0/24 qua R3 và host PC1 qua R2, nên cấu hình `ip route 10.0.0.0 255.255.255.0 192.168.0.2` và `ip route 10.0.0.5 255.255.255.255 172.16.0.2`; route /32 cụ thể hơn nên thắng với PC1. Các lựa chọn khác dùng mask /16 hoặc đảo next hop nên không đáp ứng yêu cầu."
+ },
+ "ipconn-50": {
+  "e": "R2 phải thuộc subnet WAN 10.0.0.32/27 (R1 là .33), nên địa chỉ 10.0.0.34 mask 255.255.255.224, và OSPF priority 100 cao hơn R1 (99) để thành DR. Các cấu hình khác dùng sai địa chỉ/mask (10.0.1.1 hoặc /29), priority 0 (không bao giờ là DR) hoặc priority thấp hơn 99."
+ },
+ "ipconn-51": {
+  "e": "Host B 10.10.13.10 thuộc 10.10.13.0/25. R1 có ba static route tới prefix này với AD 111 (via 10.10.10.2), 112 (via 10.10.10.6) và 108 (via 10.10.10.10), cộng với route OSPF AD 110. Route AD thấp nhất (108) via 10.10.10.10 được chọn. Default route AD 1 kém cụ thể hơn nên không dùng."
+ }
+}

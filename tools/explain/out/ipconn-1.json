@@ -1,0 +1,302 @@
+{
+ "ipconn-1": {
+  "e": "FHRP (HSRP, VRRP, GLBP) cho nhiều router dùng chung một virtual gateway; khi router active hỏng, router dự phòng tiếp quản nên host vẫn ra được ngoài. Lợi ích chính là tính sẵn sàng cao (high availability). Cân bằng tải theo tỉ lệ tải chỉ là tính năng của riêng GLBP, FHRP không giảm ARP hay giảm quản trị router."
+ },
+ "ipconn-2": {
+  "e": "Khi hai PC nằm ở hai subnet khác nhau, router là thiết bị nhận gói, kiểm tra địa chỉ IP đích trong routing table rồi chuyển tiếp sang mạng của PC-B (Layer 3). Switch Layer 2 chỉ chuyển frame theo MAC, firewall chủ yếu lọc traffic và load balancer phân phối tải tới server, không đảm nhiệm vai trò định tuyến này."
+ },
+ "ipconn-3": {
+  "e": "Đích 10.10.10.16 không thuộc 10.10.10.0/28 (dải .0-.15), cũng không khớp route nào khác và Gateway of last resort is not set. Router không có route phù hợp nên discard (drop) gói. Router không flood hay queue gói chờ route, và cũng không dùng route 'gần giống'; chỉ dùng longest prefix match thực sự chứa địa chỉ đích."
+ },
+ "ipconn-4": {
+  "e": "FHRP chạy trên một subnet cho phép các router trao đổi multicast hello message (ví dụ HSRP dùng 224.0.0.2/224.0.0.102, VRRP dùng 224.0.0.18) để biết trạng thái active/standby của nhau. Nó không lọc traffic theo IP đích, không chống loop Layer 2 (đó là STP)."
+ },
+ "ipconn-5": {
+  "e": "Route toward cả mạng 2001:db8:23::/64 qua R2 là `ipv6 route 2001:db8:23::/64 fd00:12::2`. Host 2001:db8:23::14 cần đi qua R3 nên cấu hình host route /128 `ipv6 route 2001:db8:23::14/128 fd00:13::3`; do longest prefix match, route /128 được ưu tiên hơn /64. Các lệnh dùng /128 cho cả mạng hoặc /64 kèm địa chỉ host đều sai prefix."
+ },
+ "ipconn-6": {
+  "e": "Đích 172.16.1.1 không nằm trong 172.16.1.128/25 (dải .128-.255) hay route nào khác, nên router dùng default route O*E2 0.0.0.0/0 qua 192.168.14.4 (Gateway of last resort). Các next hop còn lại thuộc các subnet 192.168.10.x không liên quan đến đích."
+ },
+ "ipconn-7": {
+  "e": "Route 192.168.1.0/26 có dải .0-.63 (network .0, broadcast .63), nên các địa chỉ 192.168.1.17 và 192.168.1.61 thuộc prefix này. 192.168.1.64, .127 và .254 nằm ngoài /26 (thuộc các block /26 khác)."
+ },
+ "ipconn-8": {
+  "e": "DR/BDR được bầu theo OSPF priority cao nhất (dải hợp lệ 0-255; priority 0 không tham gia). Đặt R3 priority 255 và R2 priority 240 cao hơn mặc định 1, nên R3 thành DR và R2 thành BDR (sau khi reset OSPF process). Option dùng priority 259 hoặc 256 là không hợp lệ, các option còn lại giữ R4/R5 ở vị trí cũ."
+ },
+ "ipconn-9": {
+  "e": "Địa chỉ 192.168.10.33 thuộc subnet 192.168.10.32/28 (dải .32-.47), route O IA 192.168.10.32/28 [110/193], nên metric là 193. Con số 110 là administrative distance, 192 là metric của route /27 khác, 84 là của default route."
+ },
+ "ipconn-10": {
+  "e": "FHRP cho phép nhiều router đóng vai một virtual gateway duy nhất cho client và tự động failover default gateway khi router chính hỏng. Chống loop là việc của STP, mã hóa là IPsec/MACsec, còn gộp port tăng băng thông là EtherChannel."
+ },
+ "ipconn-11": {
+  "e": "Cần route cho mạng đối diện; cách đơn giản là default route trỏ next hop là địa chỉ IP của router đầu kia. Theo hình, R1 phải trỏ tới 209.165.200.226 và R2 trỏ tới 209.165.200.225, tức địa chỉ phía đối diện của link giữa hai router. Các đáp án trỏ sai next hop (chính IP của mình) hoặc dùng địa chỉ host với mask /24 là sai."
+ },
+ "ipconn-12": {
+  "e": "Layer 3 switch định tuyến (route) packet giữa các VLAN/subnet dựa trên địa chỉ IP, tức di chuyển traffic giữa các endpoint theo IP. Không phải chỉ dùng MAC để chuyển giữa VLAN, và việc flood broadcast trong VLAN là chức năng của switch Layer 2 thông thường."
+ },
+ "ipconn-13": {
+  "e": "Floating static route là route có administrative distance cao hơn route chính nên chỉ vào routing table khi route chính mất. Theo hình, link dự phòng đi qua 192.168.1.2, nên lệnh đúng là `ip route 0.0.0.0 0.0.0.0 192.168.1.2 10` (AD 10 > AD 1 của static chính). Không có AD thì thành static thường (AD 1), còn `ip default-gateway` dùng cho thiết bị không định tuyến."
+ },
+ "ipconn-14": {
+  "e": "Route chính qua R3 là static có AD mặc định 1, nên backup qua R2 phải có AD lớn hơn 1. Lệnh `ip route 0.0.0.0 0.0.0.0 g0/1 6` tạo floating static route với AD 6, chỉ dùng khi route qua R3 biến mất. AD 1 sẽ tải cân bằng với route chính, còn các lệnh dùng next hop 209.165.201.5/209.165.200.226 không đúng đường qua R2 theo hình."
+ },
+ "ipconn-15": {
+  "e": "Để chặn PC mạng management ping default gateway của server mới (172.16.2.2), cần route host /32 trỏ ra interface khác để ping không tới được: `ip route 172.16.2.2 255.255.255.255 gi0/0`. Host route /32 có prefix dài nhất nên thắng mọi route khác. Các lệnh còn lại dùng next hop sai hoặc mask /29, /24 không đúng host."
+ },
+ "ipconn-16": {
+  "e": "Hai router phải cùng MTU (1500), cùng area, network type broadcast, và router làm điểm trung tâm (DR) cần priority cao nhất. Option có R14 `ip ospf priority 255` và MTU 1500 cả hai phía cho phép adjacency và R14 làm DR. Option khác sai do MTU lệch (1400 vs 1500) hoặc priority 0 khiến R14 không thể là DR."
+ },
+ "ipconn-17": {
+  "e": "Block 10.70.128.0/19 có dải 128-159 ở octet thứ ba. 24 host cần /27 (30 host), 472 host cần /23 (510 host). Subnet /23 hợp lệ 10.70.148.0/23 có địa chỉ đầu tiên 10.70.148.1, subnet /27 10.70.155.64/27 có địa chỉ đầu tiên 10.70.155.65. Các đáp án khác dùng IP không phải địa chỉ đầu tiên, sai mask hoặc 10.70.159.1/23 không phải ranh giới /23 hợp lệ."
+ },
+ "ipconn-18": {
+  "e": "Đích 10.0.1.15 khớp 10.0.1.0/24 và 10.0.1.0/28 (dải .0-.15). Theo longest prefix match, route /28 học qua EIGRP via 192.168.0.7 được chọn. Route /24 chỉ là mạng kết nối trực tiếp nên kém cụ thể hơn, còn /32 của 10.0.1.3 và 10.0.1.190 không chứa đích."
+ },
+ "ipconn-19": {
+  "e": "Router có OSPF priority cao nhất trong segment sẽ thắng bầu DR (router ID chỉ dùng để phá hòa). Do đó cấu hình interface router A với priority cao nhất trong area. Đặt priority thấp nhất làm A khó thành DR, fixed router ID hay khai báo neighbor không quyết định kết quả bầu."
+ },
+ "ipconn-20": {
+  "e": "Số host: 923 cần /22 (1022 host, đủ cả 10% tăng trưởng), 225 cần /24 (254 host), 3641 cần /20 (4094 host). Vậy R7 dùng 255.255.252.0, R8 dùng 255.255.255.0, R9 dùng 255.255.240.0. Các option khác mask quá nhỏ hoặc quá lớn so với yêu cầu."
+ },
+ "ipconn-21": {
+  "e": "Route EIGRP có mã D trong routing table. Theo exhibit, 192.168.2.0/24 là route có mã D [90/...] (AD 90 của EIGRP). Các prefix còn lại là static, connected, RIP hoặc OSPF."
+ },
+ "ipconn-22": {
+  "e": "Reference bandwidth là 100000 Mbps, nên cost = 100000 Mbps / bandwidth: Gi0/0 (10 Gbps) cost 10, Gi0/1 (100 Gbps) cost 1, Gi0/2 cost 100, Gi0/3 cost 1000 (đặt tay). OSPF chọn đường có cost thấp nhất, tức GigabitEthernet0/1."
+ },
+ "ipconn-23": {
+  "e": "Để tránh bầu DR/BDR phải đặt network type point-to-point trên interface: `ip ospf network point-to-point`. Mạng broadcast thì có DR/BDR; `ip ospf cost` và hello interval không ảnh hưởng đến bầu DR/BDR."
+ },
+ "ipconn-24": {
+  "e": "Router so sánh administrative distance trước: EIGRP (90) tốt hơn OSPF (110). Trong các route EIGRP, metric thấp nhất 144 qua F0/11 được chọn. F0/10 và F0/12 có metric 1441 cao hơn; OSPF bị loại do AD cao hơn."
+ },
+ "ipconn-25": {
+  "e": "Để R1 thành DR: tăng priority R1 lên 200 (`ip ospf priority 200` trên fa0/0) và đặt R3 priority 0 để R3 không tham gia bầu. Priority 0 trên R1 làm R1 không bao giờ là DR; đặt priority 200 trên R3 làm R3 thành DR; router-id không phải tiêu chí chính khi đã có priority."
+ },
+ "ipconn-26": {
+  "e": "Cần 380 user nên dùng /23 (510 host): subnet 10.7.54.0, mask 255.255.254.0, broadcast 10.7.55.255, dải usable 10.7.54.1 - 10.7.55.254. Các đáp án khác có broadcast hoặc mask không khớp với dải 10.7.54.1 - 10.7.55.254."
+ },
+ "ipconn-27": {
+  "e": "Cần static route có AD cao hơn OSPF (110) để chỉ dùng khi OSPF down: AD 125. Route host /32 tới 10.1.1.10 qua gi0/0 AD 125 là floating route; khi OSPF còn, route OSPF (AD 110) được dùng. AD 100 thấp hơn 110 sẽ lấn át OSPF, còn các option kia trỏ sai interface/next hop theo hình."
+ },
+ "ipconn-28": {
+  "e": "Lệnh kích hoạt OSPF trên link point-to-point là `network 10.0.0.0 0.0.0.255 area 0` (wildcard mask), khớp mạng của link giữa R1 và R2. `neighbor`, `priority` và `router-id` không đưa interface vào OSPF."
+ },
+ "ipconn-29": {
+  "e": "Trạng thái kẹt ở EXCHANGE sau 2 giờ là dấu hiệu điển hình của MTU mismatch (DBD packet quá lớn bị drop). Giải pháp là cấu hình MTU giống nhau trên hai router. Router ID và loại link không gây kẹt ở EXCHANGE."
+ },
+ "ipconn-30": {
+  "e": "Đích 192.168.1.250 khớp cả 192.168.1.0/24, 192.168.1.128/25, 192.168.1.192/26 và 192.168.1.224/27 (dải .224-.255). Longest prefix match chọn route /27 qua 192.168.15.5 (EIGRP)."
+ },
+ "ipconn-31": {
+  "e": "Mạng 172.21.34.0/25 có mask 255.255.255.128, và next hop phải là địa chỉ IP đầu kia của R86 trên link (10.73.65.66). Các đáp án khác dùng sai mask hoặc trỏ về chính R14 (10.73.65.65) / địa chỉ mạng (.64)."
+ },
+ "ipconn-32": {
+  "e": "Primary route là static route thường (AD 1) tới next hop 192.168.0.2: `ip route 0.0.0.0 0.0.0.0 192.168.0.2`. Floating static route backup sẽ có AD cao hơn. Các từ khóa `tracked` hay `floating` không tồn tại trong cú pháp lệnh này."
+ },
+ "ipconn-33": {
+  "e": "Router R2 priority 99, R1 và R3 mặc định 1; để R3 thành DR cần priority cao hơn 99, ví dụ 100 trên interface nối vào mạng 10.0.4.0/24 (Gig0/1 theo hình). Priority 0 hoặc 1 không thắng, và Gig0/0 là interface sang mạng khác."
+ },
+ "ipconn-34": {
+  "e": "Host 10.10.13.158 nằm trong 10.10.13.144/28 (dải .144-.159). Route này học qua OSPF via 10.10.10.9; /25 (.0-.127) và /29 (.160) không chứa host, còn default route kém cụ thể hơn. Vậy next hop là 10.10.10.9."
+ },
+ "ipconn-35": {
+  "e": "Đích 10.0.10.0/24 có hai route: OSPF [110/10] via 10.0.1.4 và EIGRP [90/10] via 10.0.1.5. Router chọn route có administrative distance thấp hơn, tức EIGRP (90), nên next hop là 10.0.1.5."
+ },
+ "ipconn-36": {
+  "e": "Backup (floating) static route phải có AD cao hơn OSPF (110), nên dùng AD 111: `ip route 192.168.20.0 255.255.255.0 192.168.30.2 111`. AD 90 hay mặc định 1 sẽ thắng OSPF; mask /16 là sai mạng."
+ },
+ "ipconn-37": {
+  "e": "Secondary route phải có AD lớn hơn AD của route chính (OSPF 110) nên chọn AD 111/112, trỏ qua link phụ theo hình (172.16.0.5/.6). Các option AD 113/114, 89 hay 110 không phù hợp: AD 89 thấp hơn OSPF, 110 bằng OSPF."
+ },
+ "ipconn-38": {
+  "e": "R1 là DROTHER, muốn thành DR thì tăng priority interface của chính R1 lên 200 (cao nhất) rồi `clear ip ospf process` để bầu lại (DR không tự preempt). Đặt priority 1 là mặc định, và đổi priority trên R2/R3 không giúp R1."
+ },
+ "ipconn-39": {
+  "e": "R1 chỉ được thiết lập neighbor với R2, không tham gia bầu DR (`ip ospf priority 0`) và dùng `router-id 10.1.1.1`. Option B đáp ứng đủ ba yêu cầu này, các option khác thiếu một yếu tố hoặc có priority/router-id sai."
+ },
+ "ipconn-40": {
+  "e": "Interface Ethernet/Gigabit Ethernet mặc định thuộc network type broadcast trong OSPF (có bầu DR/BDR, hello 10s). Point-to-point mặc định dành cho serial HDLC/PPP."
+ },
+ "ipconn-41": {
+  "e": "Trên router Cisco dùng `ip route <network> <subnet mask> <next-hop>`. Mạng 10.0.3.0/24 dùng mask 255.255.255.0 qua next hop 10.0.4.3 (router láng giềng theo hình). `route add` là cú pháp Windows, và wildcard mask 0.255.255.255 không dùng cho ip route."
+ },
+ "ipconn-42": {
+  "e": "Để có failover, cần floating static default route với AD cao hơn (AD 2) trỏ qua link dự phòng 10.10.10.6 / 10.10.10.5. Static route AD 1 mặc định sẽ cạnh tranh với route chính; các route host với next hop sai không tạo failover đúng."
+ },
+ "ipconn-43": {
+  "e": "Đích 10.56.192.1 không nằm trong 10.56.0.0/17 (đến .127.255) hay 10.56.128.0/18 (đến .191.255) nên không khớp route connected nào. Router dùng default route S* 0.0.0.0/0 via 10.56.0.1, tức next hop 10.56.0.1."
+ },
+ "ipconn-44": {
+  "e": "Khi không có loopback và không cấu hình router-id thủ công, OSPF chọn địa chỉ IP cao nhất trong các interface vật lý đang up/up làm router ID. Không phải 0.0.0.0, OSPF vẫn chạy bình thường, và không cộng thêm 1."
+ },
+ "ipconn-45": {
+  "e": "Lệnh network dùng wildcard mask, không phải subnet mask. Link giữa R1 và R2 là 10.0.0.0/30 nên dùng `network 10.0.0.0 0.0.0.3 area 0`, mạng LAN của R1 theo hình là 10.0.1.0/24 nên dùng `network 10.0.1.0 0.0.0.255 area 0`. Các option khác dùng sai prefix, sai wildcard (0.0.0.252) hoặc dùng subnet mask."
+ },
+ "ipconn-46": {
+  "e": "MAC ảo của VRRP có dạng 0000.5E00.01xx, với xx là VRID (0a = VRID 10). 0000.0C07.ACxx là của HSRP v1 và 0007.B400.xxxx là của GLBP, còn các giá trị còn lại không phải MAC ảo của FHRP."
+ },
+ "ipconn-47": {
+  "e": "R1 đang là DR; để R2 thành DR phải tăng OSPF priority của R2 lên cao hơn R1 (ví dụ 100) trên gi0/0. Priority 1 là mặc định và không đủ; thay router-id không đáng tin vì priority được so sánh trước router ID."
+ },
+ "ipconn-48": {
+  "e": "Đích 10.1.2.126 khớp 10.1.2.0/25 (EIGRP, AD 90) và static 10.1.2.112/28 (dải .112-.127). Route /28 có prefix dài nhất nên được chọn, next hop 10.165.20.166. Longest prefix match được xét trước administrative distance."
+ },
+ "ipconn-49": {
+  "e": "Mạng 10.0.0.0/24 cần đi qua R3 và host PC1 10.0.0.5/32 qua R2. Trên R1 cấu hình route /24 tới next hop 192.168.0.2 và route /32 tới next hop 172.16.0.2 theo hình; route /32 cụ thể hơn nên thắng với PC1. Các option mask /16 hoặc đổi next hop sai thì không đáp ứng yêu cầu."
+ },
+ "ipconn-50": {
+  "e": "R2 phải thuộc đúng subnet WAN (mask /27, IP 10.0.0.34) và có OSPF priority cao nhất (100) để thành DR. Option khác dùng sai địa chỉ/mask (10.0.1.x), priority 0 (không bao giờ là DR) hoặc priority thấp hơn."
+ },
+ "ipconn-51": {
+  "e": "Đích host B 10.10.13.10 thuộc 10.10.13.0/25. Có ba static route tới prefix này với AD 111, 112 và 108; route có AD thấp nhất (108) via 10.10.10.10 được chọn. Route default AD 1 kém cụ thể hơn nên không dùng."
+ },
+ "ipconn-52": {
+  "e": "Mạng LAN của R3 là 10.0.15.0/24 nên dùng mask 255.255.255.0, next hop là IP của R3 trên link 10.0.20.0/24 (10.0.20.3). Các option khác dùng mask /26, sai next hop hoặc trỏ tới mạng của chính R1."
+ },
+ "ipconn-53": {
+  "e": "Prefix 10.10.13.160 trong bảng định tuyến là 10.10.13.160/29, tức subnet mask 255.255.255.248."
+ },
+ "ipconn-54": {
+  "e": "Host route là route /32 tới một host cụ thể: `ip route 10.10.10.10 255.255.255.255 192.168.0.2` (next hop là router kế tiếp). Mask /24 hay 0.0.0.0 là network/default route, còn đảo địa chỉ đích và next hop là sai."
+ },
+ "ipconn-55": {
+  "e": "Neighbor mong muốn hiển thị FULL/ - (không có DR/BDR) và priority 0 trên link, là kết quả của network type point-to-point. Cấu hình `ip ospf network point-to-point` trên interface neighbor cho kết quả này. Cost, area hay priority không tạo ra trạng thái '-'."
+ },
+ "ipconn-56": {
+  "e": "Địa chỉ 192.168.2.2 khớp cả 192.168.2.0/28 (.0-.15) và 192.168.2.0/29 (.0-.7), cùng 192.168.0.0/20. Longest prefix match chọn 192.168.2.0/29."
+ },
+ "ipconn-57": {
+  "e": "R1 có hai default route: AD 1 via 172.16.20.2 và AD 20 via 10.0.0.2 (floating). Khi mọi link hoạt động, route AD thấp hơn được dùng, nên packet đi tới 172.16.20.2. Không round robin vì AD khác nhau."
+ },
+ "ipconn-58": {
+  "e": "Đích 10.10.8.14 nằm trong 10.10.8.0/28 (dải .0-.15) kết nối trực tiếp qua Gi0/0/2, nên mask là 255.255.255.240."
+ },
+ "ipconn-59": {
+  "e": "Host 172.16.0.202 nằm trong 172.16.0.128/25 (dải .128-.255) học qua OSPF, metric [110/32445]. Route /29 .192 chỉ chứa .192-.199 nên không khớp, còn 172.16.0.0/24 kém cụ thể hơn. Metric là con số thứ hai: 32445."
+ },
+ "ipconn-60": {
+  "e": "Với đích 10.10.10.3, route khớp là 10.0.0.0/8, 10.10.10.0/28 (.0-.15) và default; route /28 dài nhất nên là best path, tạo bởi `ip route 10.10.10.0 255.255.255.240 g0/0`. Route 10.10.10.1/32 chỉ khớp host .1, và /22 ngắn hơn /28."
+ },
+ "ipconn-61": {
+  "e": "Longest prefix match là entry có mask dài nhất khớp host. 192.168.10.5 nằm trong 192.168.10.0/26 (.0-.63) và entry này có mask 255.255.255.192 (/26) dài nhất trong bốn entry."
+ },
+ "ipconn-62": {
+  "e": "Đích 172.18.32.38 khớp 172.18.32.36/30 (dải .36-.39) connected qua Gi0/0, 172.18.32.0/26 và /24, /19. Longest prefix match là /30, nên packet đi ra GigabitEthernet0/0."
+ },
+ "ipconn-63": {
+  "e": "192.168.12.16 không thuộc OSPF 192.168.12.0/28 (.0-.15) nhưng thuộc RIP 192.168.12.0/27 (.0-.31) và EIGRP /24. Route khớp có prefix dài nhất là RIP /27 nên được chọn, không phụ thuộc AD."
+ },
+ "ipconn-64": {
+  "e": "Load-balancing qua hai ISP cần hai default route có AD bằng nhau, hoặc chia dải 0.0.0.0/1 và 128.0.0.0/1 mỗi nửa qua một ISP. Hai lệnh default route cùng AD (hai next hop) tạo ECMP; bộ lệnh chia hai nửa 0/1 và 128/1 cũng chia tải theo dải đích. Default route có AD khác nhau (floating) thì chỉ failover, không load-balance."
+ },
+ "ipconn-65": {
+  "e": "Longest prefix match: 172.31.0.1 khớp cả /16, /24 và /25, trong đó /25 có prefix dài nhất nên được chọn. Default route chỉ dùng khi không có route khớp."
+ },
+ "ipconn-66": {
+  "e": "Đích 172.16.3.254 nằm trong 172.16.2.0/23 (dải 172.16.2.0 - 172.16.3.255) connected qua Gi0/0/1, nên mask là 255.255.254.0. Không dùng default route (0.0.0.0) vì có route cụ thể hơn."
+ },
+ "ipconn-67": {
+  "e": "Cấu hình các mức syslog khác nhau cho từng thiết bị là để đặt mức severity của message mà mỗi thiết bị sẽ gửi/log. Syslog level (0-7) giới hạn các message theo độ nghiêm trọng, không phải để xác định nguồn hay rate-limit."
+ },
+ "ipconn-68": {
+  "e": "SNMPv2 thêm GetBulk (lấy một lượng lớn dữ liệu trong một request) và Inform (thông báo có xác nhận). Get, GetNext và Set đã có từ SNMPv1."
+ },
+ "ipconn-69": {
+  "e": "Các router HSRP chia sẻ một virtual IP address, host dùng nó làm default gateway. Khi router active hỏng, router standby nhận lại virtual IP nên host không cần đổi cấu hình."
+ },
+ "ipconn-70": {
+  "e": "NAT chưa hoàn chỉnh vì thiếu việc xác định interface outside (`ip nat outside`) bên cạnh interface inside đã có; NAT cần cả inside và outside để dịch. Các đáp án khác không phải bước còn thiếu."
+ },
+ "ipconn-71": {
+  "e": "VRRP là giao thức FHRP chuẩn mở (RFC), hoạt động cả với thiết bị Cisco lẫn hãng khác. HSRP và GLBP là giao thức độc quyền Cisco, còn FHRP chỉ là tên chung của nhóm giao thức."
+ },
+ "ipconn-72": {
+  "e": "Host route dùng mask /32 và next hop là địa chỉ của router kế tiếp: `ip route 10.80.65.10 255.255.255.255 10.73.65.66`. Các option khác dùng mask không phải /32, wildcard hoặc đảo đích và next hop."
+ },
+ "ipconn-73": {
+  "e": "Mạng 172.16.34.0/29 có mask 255.255.255.248, và next hop từ R86 là địa chỉ của R14 trên link, 10.73.65.65. Các option khác có mask sai, next hop là chính R86 hoặc dùng wildcard."
+ },
+ "ipconn-74": {
+  "e": "Để chọn route hợp lệ tới 1.1.1.3/32, router trước hết dùng administrative distance thấp nhất (độ tin cậy giao thức), rồi metric thấp nhất trong cùng giao thức. Không dùng AD hay metric cao nhất."
+ },
+ "ipconn-75": {
+  "e": "Routing table không có route nào (kể cả default route) cho 192.168.0.10, và không có Gateway of last resort nên traffic bị drop. Thiếu default route là nguyên nhân; không phải ACL hay default gateway của site B."
+ },
+ "ipconn-76": {
+  "e": "Để PC1 tới cả mạng 10.10.10.0/24 cần route /24 tới next hop R3 (`ip route 10.10.10.0 255.255.255.0 192.168.2.3`) và route host riêng /32 tới host ngoại lệ qua R2 (`ip route 10.10.10.10 255.255.255.255 192.168.2.2`). Hai route này bao phủ cả mạng lẫn host ngoại lệ; các route /29 hoặc dùng interface thoát thì không bao phủ đúng."
+ },
+ "ipconn-77": {
+  "e": "Để R2 đến server application qua EIGRP, next hop phải là địa chỉ IP của router láng giềng EIGRP trên link chung subnet với R2, tức 10.10.10.6. Các địa chỉ khác thuộc subnet khác hoặc là địa chỉ interface của chính R2."
+ },
+ "ipconn-78": {
+  "e": "Địa chỉ IPv6 IPv4-mapped ::ffff:a36:4901 đại diện cho loopback host đơn lẻ (10.54.73.1/32), nên prefix length phải là /128 (route host)."
+ },
+ "ipconn-79": {
+  "e": "192.168.0.55 khớp 192.168.0.0/16 (EIGRP), /23 (OSPF) và /24 (static). Longest prefix match chọn /24 static via 10.0.12.2, thoát qua GigabitEthernet0/1. Default route Null0 chỉ dùng khi không có route khớp."
+ },
+ "ipconn-80": {
+  "e": "Với cáp crossover chỉ có hai router, cấu hình `ip ospf network point-to-point` bỏ qua bầu DR/BDR (không có Wait timer 40s), nên adjacency lên FULL nhanh hơn. Network broadcast mặc định phải chờ bầu DR/BDR; priority 0 hay dead-interval không rút ngắn thời gian này."
+ },
+ "ipconn-81": {
+  "e": "Phải chọn mask phù hợp cho từng subnet rồi lấy địa chỉ usable cuối. Option B có R7 10.88.31.126/28, R8 10.19.63.94/26, R9 10.23.98.158/29, đều là địa chỉ cuối usable (trước broadcast) của subnet tương ứng. Các option khác dùng địa chỉ broadcast (ví dụ .127, .95, .159) hoặc mask không khớp."
+ },
+ "ipconn-82": {
+  "e": "R1 cần route tới mạng 172.25.25.0/24 ở site R2 với next hop là IP của R2 trên link, 192.168.2.2. Next hop 192.168.2.1 là IP của chính R1, còn các route /32 chỉ cho một host."
+ },
+ "ipconn-83": {
+  "e": "Packet tới Internet không khớp route cụ thể nào, nên dùng default route S* 0.0.0.0/0 [1/0]; administrative distance của static route là 1."
+ },
+ "ipconn-84": {
+  "e": "Địa chỉ 172.16.1.190 nằm trong 172.16.1.184/29 (dải .184-.191), học qua OSPF via 192.168.7.35. Route /28 (.0-.15) và các route khác không chứa địa chỉ này. Longest prefix match chọn /29."
+ },
+ "ipconn-85": {
+  "e": "Hai router chỉ thành neighbor khi hello và dead interval khớp. R1 có Dead 40, R2 có Dead 45 (Hello đều 15), nên cần đặt `ip ospf dead-interval 40` trên R2. Router ID khác nhau là bình thường, và đổi hello thành 10 làm hello lệch với R1."
+ },
+ "ipconn-86": {
+  "e": "Floating static route phải có AD cao hơn RIP (120), vì vậy dùng AD 121: `ip route 192.168.23.0 255.255.255.0 192.168.13.3 121`. Mask /32 sai mạng, AD 100 thấp hơn RIP, và không có AD (1) sẽ thắng RIP."
+ },
+ "ipconn-87": {
+  "e": "Router nhận nhiều prefix khác độ dài (/8, /16, /24) đều là route hợp lệ riêng biệt nên tất cả đều được cài vào routing table, và longest prefix match chỉ quyết định lúc forward. Do đó show ip route hiển thị cả ba route."
+ },
+ "ipconn-88": {
+  "e": "R1 chạy OSPF area 1 nên R2 phải cùng area 1; trên R2 vào interface và dùng `ip ospf 1 area 1`. Area 0 sẽ lệch area nên không thành neighbor. Network 192.168.12.1 là địa chỉ của R1."
+ },
+ "ipconn-89": {
+  "e": "Route 10.0.1.3/32 là host route (mask /32) đại diện cho một địa chỉ đích duy nhất 10.0.1.3, không phải cả subnet hay source."
+ },
+ "ipconn-90": {
+  "e": "Hai static route cùng đích có cùng AD và cùng metric (static AD 1) nên router cài cả hai vào routing table và tải cân bằng (ECMP) qua các next hop khác nhau. Không chọn theo IP thấp, MAC thấp hay tuổi route."
+ },
+ "ipconn-91": {
+  "e": "Giải pháp rẻ là quảng bá một route cụ thể hơn (longest prefix match) cho traffic backup qua circuit phụ, để traffic đó đi circuit phụ thay vì circuit chính. VLAN hay switch riêng không thay đổi đường định tuyến, còn circuit riêng thì đắt."
+ },
+ "ipconn-92": {
+  "e": "R1 có Hello 10, R2 có Hello 15 nên Hello không khớp (Dead 40 đã khớp), khiến không thành neighbor. Cấu hình `ip ospf hello-interval 10` trên R2 khắc phục. Router-id khác nhau không ảnh hưởng; Dead 45 sẽ làm lệch Dead."
+ },
+ "ipconn-93": {
+  "e": "Để R14 và R86 thành adjacency và R14 làm DR (điểm trung tâm), cần priority 255 trên R14, MTU giống nhau (1500) và cùng network trong area 0. Option đúng đặt `ip ospf 10 area 0` trên interface, MTU 1500 cả hai và priority 255 cho R14. Option priority 0 trên R14 không làm được DR; các option còn lại bị lệch MTU 1500/1400."
+ },
+ "ipconn-94": {
+  "e": "Floating static route cần AD cao hơn route chính, ví dụ AD 10 (`ip route 0.0.0.0 0.0.0.0 10.200.0.2 10`) nên chỉ dùng khi route chính mất. Không có AD hoặc AD 1 là static route bình thường; `floating` không phải từ khóa."
+ },
+ "ipconn-95": {
+  "e": "Cùng prefix nhưng khác giao thức: router dùng AD thấp nhất, EIGRP (90) thay vì OSPF (110). Trong các route EIGRP chọn metric thấp nhất 10331 qua G0/17."
+ },
+ "ipconn-96": {
+  "e": "Hai route EIGRP tới 172.16.1.4/30 có metric bằng nhau (90/7445) nên router load-balance (ECMP) giữa hai next hop 172.16.9.5 và 172.16.4.4."
+ },
+ "ipconn-97": {
+  "e": "Cùng prefix: AD thấp nhất thắng, EIGRP (90) tốt hơn OSPF (110). Trong EIGRP, metric 2170 nhỏ hơn 46985, nên interface G0/12 được dùng."
+ },
+ "ipconn-98": {
+  "e": "OSPF (AD 110) tốt hơn RIP (AD 120), nên chỉ xét hai route OSPF. Route OSPF có metric thấp hơn (9443) đi qua G0/20."
+ },
+ "ipconn-99": {
+  "e": "Đích 172.16.32.8 không thuộc 172.16.32.4/30 (.4-.7) nhưng khớp 172.16.32.0/26 (.0-.63), /24 và /19. Longest prefix match là /26, tức mask 255.255.255.192."
+ },
+ "ipconn-100": {
+  "e": "Hai router có Router ID trùng nhau (192.168.1.1), nên không thể thành adjacency đúng. Cần xóa router-id đã cấu hình trên OldR bằng `no router-id 192.168.1.1` rồi `clear ip ospf process` để chọn ID mới. Hello/dead đã khớp (10/40) và area cùng là 0."
+ }
+}

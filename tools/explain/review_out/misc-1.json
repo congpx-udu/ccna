@@ -1,0 +1,150 @@
+{
+ "fund-20": {
+  "e": "Exhibit ifconfig cho en0: `inet 10.8.138.14 netmask 0xffffe000 broadcast 10.8.159.255`. 0xffffe000 = 255.255.224.0 = /19, block size 32 ở octet thứ ba. 138 nằm trong khối 128-159 nên subnet là 10.8.128.0/19, khớp với broadcast 10.8.159.255."
+ },
+ "fund-21": {
+  "e": "Hai đầu link dùng transceiver khác loại: SiteA là SFP-SR (multimode, tầm ngắn khoảng 300 m) còn SiteB là SFP-LR (single-mode), trong khi khoảng cách giữa hai site là 7 km trên cáp single-mode. SR không phù hợp với sợi single-mode/7 km nên tín hiệu quang yếu, không ổn định, gây kết nối chập chờn. Cả hai bên đều up/up, tải thấp (txload/rxload 1/255) và không có counter lỗi nên không phải do latency hay lỗi vật lý bị truyền."
+ },
+ "fund-29": {
+  "e": "PC_A và PC_B cùng VLAN 200 trên một switch, nên switch chỉ chuyển tiếp frame ở Layer 2 mà không sửa header. Source và destination MAC giữ nguyên từ đầu đến cuối; switch không viết lại MAC. Sau lần giao tiếp đầu (ARP) đích đã nằm trong bảng MAC nên frame là unicast, không bị flood bằng ffff.ffff.ffff."
+ },
+ "fund-31": {
+  "e": "Trong `ipconfig /all`, adapter Wi-Fi đang dùng có `DNS Servers : 192.168.1.253`, nên yêu cầu phân giải www.cisco.com được gửi tới địa chỉ này. 192.168.1.100 là Default Gateway, 192.168.1.254 là DHCP Server và 192.168.1.226 là IPv4 của chính PC."
+ },
+ "fund-34": {
+  "e": "Yêu cầu: dùng ít địa chỉ nhất nhưng còn dư ít nhất 2 địa chỉ usable cho tương lai, tức cần tối thiểu 4 địa chỉ usable cho link điểm-điểm giữa R1 và R2: /29 có 6 usable. /30 chỉ có 2 usable nên không dư, còn /28 và /24 lãng phí hơn. 10.10.10.1 và 10.10.10.4 mask 255.255.255.248 cùng thuộc 10.10.10.0/29 và đều là host hợp lệ."
+ },
+ "fund-39": {
+  "e": "PC có `Subnet Mask 255.255.255.192` (/26) trong khi router dùng 10.2.2.1/27, nên mask phía PC không khớp với subnet thực tế. Cần sửa Subnet Mask thành 255.255.255.224. Default gateway 10.2.2.1 nằm trong subnet, DNS 8.8.8.8 hợp lệ và DHCP không phải nguyên nhân."
+ },
+ "fund-54": {
+  "e": "Hai cổng bị cấu hình cứng khác nhau: Port 1 là speed 100/half, Port 2 là speed 10/full. Speed mismatch khi cố định cả hai đầu làm link không lên, nên cả hai cổng đều down. Khoảng cách 99 m vẫn nằm trong giới hạn 100 m của Cat5, còn portfast không ảnh hưởng trạng thái vật lý; duplex mismatch thường chỉ làm link up nhưng lỗi."
+ },
+ "fund-59": {
+  "e": "Subnet là 10.2.2.0/29 (host 10.2.2.1-10.2.2.6) và PC có mask 255.255.255.248 khớp, nhưng Default Gateway cấu hình là 10.2.2.10 nằm ngoài subnet nên PC không thể tới gateway. Cần sửa Default Gateway về địa chỉ trong subnet (ví dụ 10.2.2.1). DNS 8.8.8.8 và mask đều phù hợp."
+ },
+ "fund-68": {
+  "e": "Mỗi VLAN cần subnet cho 3 PC (cộng gateway) và phải chừa chỗ cho 30 VLAN nữa trong cùng Class C 192.168.0.0/24. Mask /29 (255.255.255.248) có 6 host usable, và /24 chia được 256/8 = 32 subnet, đủ cho VLAN 10 cộng 30 VLAN mới. /30 chỉ có 2 host usable (thiếu), còn /25 và /24 quá lớn, không còn chỗ cho các VLAN khác."
+ },
+ "fund-86": {
+  "e": "Cần 20 host nên cần ít nhất 5 bit host: /27 (255.255.255.224, 30 host usable). Các subnet đã dùng trong exhibit là 10.10.225.0/28, .16/28 và .64/28; khối 10.10.225.32/27 (.32-.63) không chồng lấn với chúng. 10.10.225.48/27 không đúng ranh giới /27, còn /28 chỉ có 14 host."
+ },
+ "access-5": {
+  "e": "ARP request là broadcast (FF:FF:FF:FF:FF:FF), nên S1 flood ra mọi port cùng VLAN trừ port nhận vào là G0/0 (tức G0/1, G0/2 và G0/3). Switch không forward broadcast tới một port cụ thể và cũng không drop nó."
+ },
+ "access-10": {
+  "e": "Root bridge là switch có Bridge ID thấp nhất, so priority trước rồi mới tới MAC. Trong VLAN 110, Switch 2 có priority 24586 (24576 + 10), thấp nhất trong 32778, 24586, 28682 và 64000, nên là root."
+ },
+ "access-11": {
+  "e": "Gi1/1 nối PC-2 chỉ cần `switchport mode access` với data VLAN 8. Gi1/3 nối Phone-1 (PC-1 cắm sau phone) phải là access port với `switchport access vlan 8` cho data và `switchport voice vlan 9` cho voice. Option có voice vlan 9 khác data vlan 8 trên cả hai cổng access là đúng; các option dùng trunk hoặc đặt voice trùng VLAN data/đảo VLAN thì sai."
+ },
+ "access-14": {
+  "e": "PC A (192.168.0.10/23) và File Server (192.168.1.20/23) cùng subnet, nối qua Switch A Gi0/4 và Switch B Gi0/3 đều access VLAN 13. Trunk Gi0/1 trên Switch A chỉ cho phép VLAN 10-12 nên VLAN 13 bị chặn. Dùng `switchport trunk allowed vlan add 13` để thêm VLAN 13 mà không ghi đè danh sách; lệnh không có `add`, `none` hay `remove 10-11` sẽ làm gián đoạn các VLAN khác."
+ },
+ "access-22": {
+  "e": "Để SW1 trở thành trunk một cách thụ động (chỉ chờ đàm phán DTP), đặt `switchport mode dynamic auto`; mode auto sẽ thành trunk khi phía SW2 là desirable hoặc trunk. `dynamic desirable` là chủ động gửi DTP, `mode trunk` là cố định, `dot1q-tunnel` là QinQ."
+ },
+ "access-23": {
+  "e": "Gi1/1 nối IP phone kèm PC nên phải là access port: `switchport mode access`, `switchport access vlan 300` cho data và `switchport voice vlan 400` cho voice theo exhibit. Option đảo hai VLAN thì sai; option dùng mode trunk hoặc `switchport trunk vlan` sai cú pháp/không đúng cách cấp voice VLAN."
+ },
+ "access-25": {
+  "e": "Root bridge là switch có priority thấp nhất. Branch-3 đặt priority 0, là giá trị nhỏ nhất có thể nên luôn thắng. Branch-4 dùng `root primary` chỉ hạ priority xuống khoảng 24576 (hoặc thấp hơn root hiện tại một bước) nên không thể thấp hơn 0; các giá trị 614440 và 39082416 vượt quá phạm vi hợp lệ của priority."
+ },
+ "access-26": {
+  "e": "Sales-4 (Gi1/0/4) chưa có trong bảng MAC, nên switch học source MAC của nó (ghi MAC + Gi1/0/4 vào bảng). Sau đó tra MAC đích Sales-1, đã có entry trên Gi1/0/1 (000c.8590.bb7d), và forward unicast ra đúng cổng đó. Ánh xạ MAC sang IP là việc của ARP, không phải của switch; frame không bị flood hay drop."
+ },
+ "access-30": {
+  "e": "Router A nối Router B qua Gi0/0/0 và Router C qua Gi0/0/1. Để chỉ gửi CDP tới Router C, cần giữ CDP bật toàn cục (`cdp run`) rồi tắt CDP trên cổng tới Router B bằng `interface gi0/0/0` và `no cdp enable`. `no cdp run` tắt CDP hoàn toàn, còn chỉ `cdp enable` trên gi0/0/1 không ngăn việc gửi CDP ra gi0/0/0."
+ },
+ "access-38": {
+  "e": "Show etherchannel summary cho thấy Po1(SD), Fa0/1 và Fa0/2 ở trạng thái (I) stand-alone vì cả Switch1 lẫn Switch2 đều đặt `channel-group 1 mode passive`. LACP cần ít nhất một phía active để khởi tạo đàm phán, nên đổi Switch2 sang LACP active là đủ. `desirable` thuộc PAgP, còn `on` không đàm phán và không ghép với LACP."
+ },
+ "access-45": {
+  "e": "Sơ đồ dùng ba channel không chồng nhau 1, 6 và 11 để tránh nhiễu. Zone 3 và zone 4 đều dùng cùng một channel (hatch giống nhau) và vùng phủ chồng lấn mạnh lên nhau, gây co-channel interference nên client ở giữa hai zone này bị chập chờn. Các cặp còn lại chồng lấn nhưng khác channel."
+ },
+ "access-48": {
+  "e": "Et0/2 của SW_2 đang ở `dynamic auto` (operational trunk, trunking VLAN 5). Auto-auto sẽ không tạo trunk, nên phía còn lại phải chủ động là `switchport mode dynamic desirable` (dùng DTP như yêu cầu), kèm `switchport trunk allowed vlan add 5` để VLAN 5 của printer đi qua trunk. Các option dùng private-vlan, trunk pruning hoặc dynamic auto không đáp ứng yêu cầu."
+ },
+ "access-49": {
+  "e": "Host A (Fa0/1) gửi frame tới host D, nhưng đích chưa có trong bảng MAC (unknown unicast) nên switch flood frame ra mọi port cùng VLAN trừ Fa0/1 nơi nhận. Đây không phải broadcast storm hay err-disable."
+ },
+ "access-50": {
+  "e": "Bảng MAC của Sw1 chỉ có PC1 (0007.ec53.4289 trên Fa0/1), thiếu PC2 vì Fa0/2 bị cấu hình sai: `switchport mode trunk` với `allowed vlan 3`, trong khi PC2 thuộc VLAN 2. Cần bỏ trunk, xóa allowed vlan 3 và đặt `switchport mode access` để cổng Fa0/2 dùng access VLAN 2 đã có."
+ },
+ "access-54": {
+  "e": "EtherChannel động dùng chuẩn mở là LACP với mode active/passive. Option có active ở SW1 và passive ở SW2 (ít nhất một phía active) trên cả hai cổng, cùng `switchport mode trunk`, nên bundle được và mang mọi VLAN để các PC liên lạc đầy đủ. PAgP (desirable/auto) là Cisco proprietary, mode `on` không thương lượng, còn access mode chỉ mang một VLAN."
+ },
+ "access-55": {
+  "e": "Exhibit cho thấy SW1 đang đặt `channel-group 1 mode on` còn SW2 là `active`. Mode `on` không gửi LACPDU nên không thể ghép với LACP phía SW2. Đổi channel-group mode của SW1 sang active hoặc passive (phải khớp LACP với active của SW2) thì port-channel mới lên; desirable/auto thuộc PAgP."
+ },
+ "access-56": {
+  "e": "Exhibit cho thấy LLDP đang gửi mỗi 30 giây với hold time 120 giây. `lldp timer 60` đặt chu kỳ gửi thành 60 giây (1 phút) và `lldp holdtime 180` đặt thời gian thông tin còn hiệu lực là 180 giây (3 phút). Đơn vị là giây nên timer 1 hay holdtime 3 sai, còn `tlv-select` chỉ chọn TLV được gửi."
+ },
+ "access-58": {
+  "e": "Fa0/1 hiện chỉ có `switchport access vlan 15` cho PC (data VLAN 15) còn IP phone dùng Voice VLAN 10. Cần cấu hình cổng access kèm `switchport voice vlan 10` để phone dùng VLAN 10 và PC giữ VLAN 15. Các option dùng trunk native/allowed hoặc private-vlan không phù hợp với cổng nối phone + PC."
+ },
+ "access-61": {
+  "e": "PC1 được set cứng 100 Mbps full duplex, trong khi switch Fa0/1 để `auto/auto`. Cổng switch tự dò được speed 100 nhưng không dò được duplex và mặc định về half, tạo ra duplex mismatch: link vẫn up nhưng hiệu năng kém do collision. Speed mismatch thường làm link không lên, còn exhibit không liên quan tới fiber hay kiểu interface."
+ },
+ "access-63": {
+  "e": "Trunk SW1-SW2 đang mang VLAN 1, 100, 101, 102, 103 và cần thêm VLAN 104 mà không đụng cấu hình hiện có, nên dùng `switchport trunk allowed vlan add 104`. Không có `add` thì danh sách allowed bị thay thế (chỉ còn VLAN 100-104 hoặc 104), còn `all` mở thêm cả những VLAN không mong muốn."
+ },
+ "access-66": {
+  "e": "Exhibit cho thấy Fast Transition đang Disable và Authentication Key Management chỉ bật PSK (WPA2 AES, không có 802.1X). Muốn hỗ trợ 802.11r cho WLAN dùng PSK này thì bật Fast Transition và chọn FT PSK. FT 802.1X chỉ đúng khi WLAN dùng 802.1X, còn CCKM là cơ chế riêng của Cisco, không phải 802.11r.",
+  "warn": "Exhibit đang bật AKM PSK (802.1X không được chọn), nên đáp án phù hợp là bật Fast Transition và chọn FT PSK; FT 802.1X chỉ dùng cho WLAN 802.1X. Đáp án nguồn (FT 802.1X) có vẻ không đúng với exhibit."
+ },
+ "access-67": {
+  "e": "Để chỉ Switch1 gửi LACPDU khởi tạo, Switch1 đặt `active` và Switch2 đặt `passive` (passive chỉ trả lời LACPDU nhận được). Mode `on` không dùng LACP nên không ghép được với passive/active, còn nếu Switch1 passive và Switch2 active thì Switch2 mới là bên khởi tạo."
+ },
+ "access-68": {
+  "e": "Root bridge là switch có Bridge ID thấp nhất, so priority trước rồi mới tới MAC. SW1 có priority 24596 (24576 + 20), thấp nhất trong 24596, 28692, 32788 và 64000 nên là root của VLAN 20; vì mọi link cùng tốc độ nên không ảnh hưởng việc chọn root."
+ },
+ "access-70": {
+  "e": "Gi0/1 nối IP phone kèm PC A nên cấu hình access port: `switchport mode access`, `switchport access vlan 50` cho data và `switchport voice vlan 51` cho voice, khớp Data VLAN 50 và Voice VLAN 51 của exhibit. Các option dùng trunk hoặc `voice vlan untagged/dot1p` không tạo hai VLAN riêng biệt như yêu cầu."
+ },
+ "access-72": {
+  "e": "Exhibit cho thấy Switch2 Fa0/1 được đặt `dynamic auto` với allowed vlan 5,10; nếu SW1 cũng auto/access thì link không thành trunk. PC1 và PC2 (VLAN 5) và PC3/PC4 (VLAN 10) ở hai switch khác nhau nên link SW1-SW2 phải là trunk: cần `switchport mode trunk` trên Fa0/1 của SW2 giống SW1. Mode access chỉ mang một VLAN."
+ },
+ "access-75": {
+  "e": "Ba cổng G1/1-1/3 giữa SW1 và SW2 phải tạo thành Layer 2 LACP EtherChannel: dùng `channel-group 1 mode active` (LACP) trên cả hai switch, kèm trunk để mang VLAN. Desirable là PAgP, `on` là tĩnh không dùng LACP, và passive-passive thì không phía nào khởi tạo."
+ },
+ "access-76": {
+  "e": "Ping PC2 (VLAN 14, SW4) tới PC7 (VLAN 14, SW9) đi qua SW4 Gi0/2, SW11 Gi0/2, SW11 Gi0/1 rồi SW9 Gi0/2. Các link trên đường này phải là trunk cho phép VLAN 14, và link SW4-SW11 còn phải mang VLAN 108 để PC3 và PC9 vẫn liên lạc được. Option trunk 14,108 trên SW4 và SW11, còn SW9 Gi0/2 allowed vlan 14, đáp ứng mà không làm gián đoạn traffic khác; các option khác thiếu VLAN hoặc dùng access port sai."
+ },
+ "access-83": {
+  "e": "WLAN đang dùng WPA2 với AKM 802.1X và Fast Transition ở Adaptive, FT 802.1X chưa bật. Để bắt buộc client dùng 802.11r, đặt Fast Transition ở Enable và bật FT 802.1X trong Authentication Key Management. CCKM, PMF Required và gtk-randomize không liên quan 802.11r."
+ },
+ "access-87": {
+  "e": "Exhibit cho thấy FlexConnect Local Switching chưa được bật. Để traffic dữ liệu của một WLAN được switch tại chi nhánh mà không gửi về WLC ở data center, bật FlexConnect Local Switching. HTTP/DHCP profiling và Disassociation Imminent không làm việc đó."
+ },
+ "access-91": {
+  "e": "Cần inter-VLAN routing qua R1 (SW1 Gi0/2), untagged dùng VLAN 5 và không dùng VLAN 1. Option đúng đặt trunk SW1 Gi0/1 và SW2 Gi0/7 với native VLAN 5 và allowed 5,7,9,108 ở cả hai đầu, trunk SW1 Gi0/2 tới router cho phép 5,7,9,108, và PC2 ở SW2 Gi0/1 là access VLAN 7. Các option khác thiếu native VLAN 5, thiếu VLAN 5 trong allowed list hoặc làm hỏng đường trunk giữa hai switch."
+ },
+ "access-99": {
+  "e": "Port Channel 1 gồm ba link (Ge0/0-Ge0/2) và PC1 gửi 1800 Mbps, nên cần tối thiểu 2 link 1G hoạt động. `port-channel min-links 2` trên interface port-channel làm port-channel down khi số link active còn dưới 2 (tức khi Ge0/0 và Ge0/1 down). `lacp max-bundle` chỉ giới hạn tối đa, còn các priority chỉ ảnh hưởng việc chọn link."
+ },
+ "access-101": {
+  "e": "NewSW thay SW2 nên f0/0 phải là trunk mang cả VLAN 2 (hiện có) và VLAN 10 (mới). Native VLAN đặt là 2 để khớp với cổng f0/0 của SW1 đang là access VLAN 2 (traffic untagged thuộc VLAN 2). Option có `mode trunk`, allowed vlan 2,10 và native vlan 2 là đúng; option chỉ cho VLAN 10 làm mất VLAN 2, còn các option `switchport mode access` không thể mang nhiều VLAN."
+ },
+ "access-103": {
+  "e": "Giới hạn số client trên một SSID (USERWL) được cấu hình trong phần WLAN của WLC (tab Advanced) bằng tham số Maximum Allowed Clients = 125. DTIM chỉ liên quan chu kỳ beacon cho thiết bị tiết kiệm pin, Throttle IPv6 và Software activation không giới hạn số client của WLAN."
+ },
+ "access-106": {
+  "e": "Muốn switch chỉ phản hồi LACP mà không chủ động khởi tạo thì dùng mode passive của LACP (`channel-group 1 mode passive`). Desirable và auto thuộc PAgP, còn `on` không dùng giao thức đàm phán nào. Về mặt cú pháp thực tế lệnh channel-group được nhập trên các interface vật lý Ge0/0/0-15, nhưng ý chính của câu hỏi là mode passive."
+ },
+ "access-118": {
+  "e": "Et0/0 đang là static access (VLAN 7), trunking encapsulation admin là isl và không negotiate; cần chuyển thành trunk mang VLAN 5,6. Vì hai công ty dùng hãng khác nhau nên phải dùng chuẩn mở 802.1Q: `switchport mode trunk` kèm `switchport trunk encapsulation dot1q`, mặc định trunk cho phép tất cả VLAN. ISL là độc quyền Cisco, còn các option dynamic auto/nonegotiate không tạo trunk ổn định giữa hai switch."
+ },
+ "access-120": {
+  "e": "Gi1/0/15 nối PC1 trong phòng họp phải giới hạn tối đa hai MAC. Cần bật port-security (`switchport port-security`) rồi giới hạn bằng `switchport port-security maximum 2`. Các option khác thiếu lệnh bật port-security hoặc dùng lệnh không tồn tại (`secure-mac limit`), còn chỉ khai báo một MAC tĩnh thì không cho phép đúng 2 địa chỉ."
+ },
+ "access-123": {
+  "e": "Exhibit cho thấy WLAN lantest có Status chưa Enabled và Radio Policy đang là All. Muốn chỉ client 2.4 GHz tốc độ cao (802.11g) kết nối thì đặt Radio Policy là 802.11g only, và bật Status để WLAN hoạt động. 802.11a là băng 5 GHz nên sai; Broadcast SSID và Interface/Interface Group không ảnh hưởng đến yêu cầu này."
+ },
+ "access-125": {
+  "e": "Host D (e0/3) gửi unicast tới host A (VLAN 2), nhưng bảng MAC của Sw1 không có entry cho MAC của host A trong VLAN 2 (chỉ có e0/1, e0/2 và e0/3). Đây là unknown unicast nên switch flood frame ra mọi cổng thuộc VLAN 2 trừ cổng nguồn e0/3. Switch không đưa cổng vào err-disable và không tạo broadcast storm."
+ },
+ "access-127": {
+  "e": "Fa0/1 của SW1 cho phép VLAN 100,200,300 nhưng Fa0/2 chỉ cho phép 100,200, trong khi SW2 cho phép 100,200,300 trên cả hai cổng. Cấu hình member không đồng nhất nên Fa0/2 không bundle được vào LACP. Thêm VLAN 300 bằng `switchport trunk allowed vlan add 300` trên port-channel 1 của SW1 sẽ áp xuống các member; dùng `add` để không ghi đè danh sách, còn `allowed vlan 300` không có add sẽ chỉ còn VLAN 300."
+ }
+}

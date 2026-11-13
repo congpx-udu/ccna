@@ -1,0 +1,12 @@
+{
+ "auto-101": "API key định danh duy nhất từng client nên server theo dõi mức sử dụng của từng client và áp dụng rate limit. API key không dùng để mã hóa, không chứa permission tự hết hạn và không theo dõi vị trí địa lý.",
+ "auto-102": "Mô hình AI dự đoán (predictive) dùng dữ liệu lịch sử để dự báo các đợt tăng đột biến traffic trong tương lai, giúp cân bằng tải chủ động. Nó không cấp IP, không chọn cáp, và không chỉ giám sát khối lượng traffic cũ.",
+ "auto-103": "AI phân tích pattern trong network traffic để phát hiện bất thường (anomaly detection) và các vấn đề. Nó không chỉ dự đoán lỗi thiết bị, không tăng tốc truyền gói và không chỉ đơn giản hóa route mapping.",
+ "auto-104": "Generative AI hỗ trợ simulation bằng cách tạo ra các cấu hình mạng tổng hợp (synthetic) để kiểm thử. Nó không tính toán storage, không deploy firmware và không phải công cụ thiết kế greenfield network ở ngữ cảnh này.",
+ "auto-105": "Dòng 2 là `{...}` chứa các cặp key-value nên là một JSON object. Toàn bộ danh sách trong `[ ]` mới là array; 'switch' là key và 'SW_admin' là value.",
+ "auto-106": "Trong REST, POST tạo resource mới và PUT cũng có thể tạo (hoặc thay thế) resource tại URI xác định. GET đọc, DELETE xóa, PATCH sửa một phần.",
+ "auto-107": "API key định danh duy nhất từng client application để server đếm request và áp dụng rate limit cho từng client. Không dùng để mã hóa, chọn đường đi hay định dạng dữ liệu.",
+ "auto-108": "AI phân tích pattern trong dữ liệu mạng để phát hiện bất thường (anomaly detection). Nó không chỉ dự đoán lỗi thiết bị, không đơn giản hóa routing và không làm tăng tốc độ chuyển gói.",
+ "auto-109": "Ansible dùng YAML (playbook) và hoạt động agentless (không cài agent trên thiết bị, thường qua SSH/API). Cung cấp credential, push cấu hình hay launch job template từ version control là mô tả chức năng khác hoặc của Ansible Tower/AWX, không phải đặc điểm phân biệt.",
+ "auto-110": "Dòng 3 là `{...}` chứa các cặp key-value nên là một JSON object. Toàn bộ danh sách trong `[ ]` là array, còn 'load balancer' là key và 'LB_munich' là value."
+}

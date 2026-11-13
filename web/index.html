@@ -8,16 +8,16 @@
 :root{
   --bg:#f6f7f9;--card:#fff;--text:#1d2330;--muted:#6b7385;--line:#e4e7ec;
   --accent:#2563eb;--accent-soft:#e8efff;--ok:#16a34a;--ok-soft:#e7f7ec;--bad:#dc2626;--bad-soft:#fdecec;
-  --vi:#0f766e;--code:#f1f3f6;
+  --vi:#0f766e;--code:#f1f3f6;--warn:#b45309;--warn-soft:#fef3e2;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#0f1218;--card:#171b23;--text:#e6e9ef;--muted:#8d95a6;--line:#262c37;
   --accent:#5b8cff;--accent-soft:#1c2740;--ok:#3ccf74;--ok-soft:#14281c;--bad:#ff6b6b;--bad-soft:#2f1717;
-  --vi:#4fd1c5;--code:#11151c;}}
+  --vi:#4fd1c5;--code:#11151c;--warn:#fbbf24;--warn-soft:#2d2410;}}
 :root[data-theme=dark]{
   --bg:#0f1218;--card:#171b23;--text:#e6e9ef;--muted:#8d95a6;--line:#262c37;
   --accent:#5b8cff;--accent-soft:#1c2740;--ok:#3ccf74;--ok-soft:#14281c;--bad:#ff6b6b;--bad-soft:#2f1717;
-  --vi:#4fd1c5;--code:#11151c;}
+  --vi:#4fd1c5;--code:#11151c;--warn:#fbbf24;--warn-soft:#2d2410;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -77,6 +77,12 @@ pre,.tbl td{font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
 .dots button.cur{border-color:var(--accent);color:var(--accent);font-weight:700}
 .dots button.ok{background:var(--ok-soft);border-color:var(--ok)}
 .dots button.bad{background:var(--bad-soft);border-color:var(--bad)}
+.explain{margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--accent-soft);border-left:3px solid var(--accent);font-size:14.5px;white-space:pre-wrap}
+.explain b{display:block;margin-bottom:4px;color:var(--accent)}
+.explain .warn{margin-top:8px;padding:8px 10px;border-radius:6px;background:var(--warn-soft);color:var(--warn)}
+details.exd{margin-top:12px}
+details.exd summary{cursor:pointer;color:var(--accent);font-size:14px}
+code{font:13px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 4px;border-radius:4px}
 .big{font-size:40px;font-weight:700;margin:4px 0}
 .muted{color:var(--muted)}
 .kbd{font-size:12px;color:var(--muted);margin-top:22px}
@@ -97,11 +103,16 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
   <main id="app"></main>
 </div>
 <script src="data.js"></script>
+<script src="explain.js"></script>
 <script>
 (() => {
 const DATA = window.CCNA_DATA;
 const ALL = DATA.flatMap(s => s.questions.map(q => ({...q, sec: s.id, secTitle: s.title})));
 const BY_ID = Object.fromEntries(ALL.map(q => [q.id, q]));
+const EXPLAIN = window.CCNA_EXPLAIN || {};
+const LETTERS = 'ABCDEFGH';
+// Options like "Option A" point at exhibit tables/images, so their order must stay fixed.
+const canShuffle = q => !q.options.some(o => /^Option [A-H]/i.test(o.text.trim()));
 const $ = s => document.querySelector(s);
 const app = $('#app');
 
@@ -161,10 +172,11 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const viSpan = (text, tag='span') => trOn && shouldTr(text) ? `<${tag} class="vi" data-tr="${esc(text.trim())}"></${tag}>` : '';
 const need = q => q.answer.length || 1;
+const fmtEx = t => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>');
 
 // ---------- home ----------
 let session = null;
-let homeOpts = store.get('homeOpts', {n: 30, secs: DATA.map(s => s.id), shuf: false});
+let homeOpts = Object.assign({n: 30, secs: DATA.map(s => s.id), shuf: false, shufOpt: true}, store.get('homeOpts', {}));
 
 function secStats(sec){
   let ok = 0, bad = 0;
@@ -198,7 +210,10 @@ function renderHome(){
     </div>
 
     <h2>Ôn từng phần</h2>
-    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="shufChk" ${homeOpts.shuf ? 'checked' : ''}> Xáo trộn thứ tự câu</label>
+    <div class="row" style="margin-bottom:10px;gap:18px">
+      <label class="chk"><input type="checkbox" id="shufChk" ${homeOpts.shuf ? 'checked' : ''}> Xáo trộn thứ tự câu</label>
+      <label class="chk"><input type="checkbox" id="shufOptChk" ${homeOpts.shufOpt ? 'checked' : ''}> Đảo thứ tự đáp án</label>
+    </div>
     <div class="grid">${DATA.map((s, i) => { const st = secStats(s); return `
       <button class="card sec" data-sec="${s.id}">
         <small>Phần ${i + 1}</small><b>${esc(s.title)}</b>
@@ -214,22 +229,25 @@ function renderHome(){
   $('#nChips').onclick = e => { if (e.target.dataset.n == null) return; homeOpts.n = +e.target.dataset.n; saveOpts();
     [...e.currentTarget.children].forEach(b => b.classList.toggle('on', b === e.target)); };
   $('#shufChk').onchange = e => { homeOpts.shuf = e.target.checked; saveOpts(); };
+  $('#shufOptChk').onchange = e => { homeOpts.shufOpt = e.target.checked; saveOpts(); };
   $('#rndBtn').onclick = () => {
     const pool = ALL.filter(q => homeOpts.secs.includes(q.sec));
     if (!pool.length) return alert('Hãy chọn ít nhất một chủ đề.');
-    const list = shuffle(pool); start(homeOpts.n ? list.slice(0, homeOpts.n) : list, 'Ngẫu nhiên');
+    const list = shuffle(pool); start(homeOpts.n ? list.slice(0, homeOpts.n) : list, 'Ngẫu nhiên', homeOpts.shufOpt);
   };
   app.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => {
     const s = DATA.find(x => x.id === b.dataset.sec);
-    start(homeOpts.shuf ? shuffle(s.questions.map(q => BY_ID[q.id])) : s.questions.map(q => BY_ID[q.id]), s.title);
+    start(homeOpts.shuf ? shuffle(s.questions.map(q => BY_ID[q.id])) : s.questions.map(q => BY_ID[q.id]), s.title, homeOpts.shufOpt);
   });
-  $('#wrongBtn').onclick = () => start(shuffle(wrongIds.map(id => BY_ID[id])), 'Câu sai');
+  $('#wrongBtn').onclick = () => start(shuffle(wrongIds.map(id => BY_ID[id])), 'Câu sai', true);
   $('#resetBtn').onclick = () => { if (confirm('Xoá toàn bộ tiến độ làm bài?')) { stats = {}; saveStats(); renderHome(); } };
 }
 
 // ---------- quiz ----------
-function start(list, title){
-  session = {list, title, i: 0, picks: {}, checked: {}};
+function start(list, title, shufOpt = false){
+  const order = {};
+  list.forEach(q => { const keys = q.options.map(o => o.key); order[q.id] = shufOpt && canShuffle(q) ? shuffle(keys) : keys; });
+  session = {list, title, i: 0, picks: {}, checked: {}, order, shufOpt};
   renderQ(); scrollTo(0, 0);
 }
 
@@ -251,6 +269,15 @@ function renderQ(){
   const answered = Object.keys(S.checked).length;
   const correct = S.list.filter(x => S.checked[x.id] && isRight(x)).length;
 
+  const order = S.order[q.id];
+  const optByKey = Object.fromEntries(q.options.map(o => [o.key, o]));
+  const label = k => LETTERS[order.indexOf(k)];
+  const ex = EXPLAIN[q.id];
+  const exHTML = !checked || !ex ? '' : (() => {
+    const body = `<b>💡 Giải thích</b>${fmtEx(ex.e)}${ex.warn ? `<div class="warn">⚠️ ${fmtEx(ex.warn)}</div>` : ''}`;
+    return right ? `<details class="exd"><summary>Xem giải thích</summary><div class="explain">${body}</div></details>` : `<div class="explain">${body}</div>`;
+  })();
+
   app.innerHTML = `
     <div class="prog"><i style="width:${(S.i + 1) / S.list.length * 100}%"></i></div>
     <div class="qhead">
@@ -263,16 +290,17 @@ function renderQ(){
       <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · Question ${esc(q.num)}</div>
       <div class="stem">${stemHTML(q)}</div>
       <div class="hint">${multi ? `Chọn ${need(q)} đáp án` : 'Chọn 1 đáp án'}</div>
-      <div class="opts">${q.options.map(o => {
+      <div class="opts">${order.map((k, idx) => {
+        const o = optByKey[k];
         const txt = o.text.trim();
         let cls = '';
         if (checked) { if (ans.includes(o.key)) cls = 'ok'; else if (picked.includes(o.key)) cls = 'bad'; }
         else if (picked.includes(o.key)) cls = 'sel';
         const shortTerm = txt.split(/\s+/).length <= 2; // e.g. "Switch 1", "data plane": keep as technical term
-        return `<button class="opt ${cls} ${isCode(txt) ? 'code' : ''}" data-k="${o.key}"><span class="k">${o.key}</span><span class="t">${esc(txt)}${shortTerm ? '' : viSpan(txt)}</span></button>`;
+        return `<button class="opt ${cls} ${isCode(txt) ? 'code' : ''}" data-k="${o.key}"><span class="k">${LETTERS[idx]}</span><span class="t">${esc(txt)}${shortTerm ? '' : viSpan(txt)}</span></button>`;
       }).join('')}</div>
-      ${checked ? `<div class="verdict ${right ? 'ok' : 'bad'}">${right ? '✓ Chính xác!' : '✗ Chưa đúng.'} Đáp án: ${ans.length ? ans.join(', ') : esc(q.answerText || '?')}
-        ${q.explain ? `<div class="ex">${esc(q.explain)}</div>` : ''}</div>` : ''}
+      ${checked ? `<div class="verdict ${right ? 'ok' : 'bad'}">${right ? '✓ Chính xác!' : '✗ Chưa đúng.'} Đáp án đúng: ${ans.length ? ans.map(label).sort().join(', ') : esc(q.answerText || '?')}
+        ${q.explain ? `<div class="ex">${esc(q.explain)}</div>` : ''}</div>${exHTML}` : ''}
       <div class="nav">
         <button class="btn" id="prev" ${S.i ? '' : 'disabled'}>← Trước</button>
         <span class="sp"></span>
@@ -339,8 +367,8 @@ function renderResult(){
       <button class="btn" id="again">Làm lại từ đầu</button>
       <button class="btn" id="homeB">Trang chủ</button>
     </div></div>`;
-  const r = $('#redo'); if (r) r.onclick = () => start(shuffle(wrong), S.title + ' · câu sai');
-  $('#again').onclick = () => start(S.list, S.title);
+  const r = $('#redo'); if (r) r.onclick = () => start(shuffle(wrong), S.title + ' · câu sai', true);
+  $('#again').onclick = () => start(S.list, S.title, S.shufOpt);
   $('#homeB').onclick = renderHome;
 }
 
@@ -351,7 +379,8 @@ document.addEventListener('keydown', e => {
   if (!session || !app.querySelector('.opts')) return;
   const q = session.list[session.i];
   const k = e.key.toUpperCase();
-  if (/^[A-H]$/.test(k) && q.options.some(o => o.key === k)) pick(k);
+  const pos = LETTERS.indexOf(k), order = session.order[q.id];
+  if (/^[A-H]$/.test(k) && pos < order.length) pick(order[pos]);
   else if (e.key === 'ArrowRight') go(1);
   else if (e.key === 'ArrowLeft') go(-1);
   else if (e.key === 'Enter') { e.preventDefault(); (($('#check:not([disabled])')) || $('#next') || $('#finish') || {click(){}}).click(); }

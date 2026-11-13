@@ -9,6 +9,9 @@ for sub in ("out", "review_out"):  # reviewed (exhibit-checked) explanations ove
     for f in sorted(glob.glob(os.path.join(ROOT, "tools", "explain", sub, "*.json"))):
         for k, v in json.load(open(f, encoding="utf-8")).items():
             merged[k] = v if isinstance(v, dict) else {"e": v}  # some drafts used plain strings
+# Hand-written fixes win; explanations must follow the library's answer key, so drop "warn" notes.
+merged.update(json.load(open(os.path.join(ROOT, "tools", "explain", "overrides.json"), encoding="utf-8")))
+merged = {k: {"e": v["e"]} for k, v in merged.items()}
 
 s = open(os.path.join(WEB, "data.js"), encoding="utf-8").read()
 ids = [q["id"] for sec in json.loads(s[s.index("=") + 1:].rstrip().rstrip(";")) for q in sec["questions"]]

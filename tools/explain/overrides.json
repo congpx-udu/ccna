@@ -1,0 +1,86 @@
+{
+ "fund-23": {
+  "e": "Endpoint là thiết bị đầu cuối mà người dùng thao tác trực tiếp (PC, laptop, điện thoại...), dùng để tạo, ghi dữ liệu và gửi lên server như file server. Kết nối server/client vào mạng là việc của switch, cung cấp wireless là của AP, còn forward traffic giữa các VLAN là của router hoặc L3 switch."
+ },
+ "fund-36": {
+  "e": "Hai lý do dùng private IPv4: tiết kiệm địa chỉ public (global unique) và bảo vệ mạng nội bộ trước tấn công DoS từ bên ngoài, vì địa chỉ private không được route trên Internet nên host bên trong không thể bị nhắm tới trực tiếp. Private address không làm routing table lớn hơn, không giúp renumbering khi sáp nhập mạng và cũng không phải duy nhất toàn cầu."
+ },
+ "access-40": {
+  "e": "Theo mô hình 3 tầng của đề, traffic từ workstation trên access switch này sang workstation trên access switch khác đi lên tầng distribution, chuyển qua distribution phía bên kia rồi xuống access: access – distribution – distribution – access. Traffic giữa hai access switch không cần đi lên tầng core; core dùng để kết nối các khối lớn (building/campus) với nhau."
+ },
+ "access-66": {
+  "e": "Thiết bị hỗ trợ 802.11r cần bật Fast Transition (FT) để roaming nhanh giữa các AP mà không mất kết nối khi di chuyển giữa các tầng. Cấu hình đúng là bật Fast Transition và chọn FT 802.1X trong Authentication Key Management để xác thực 802.1X kết hợp fast roaming. CCKM là cơ chế roaming riêng của Cisco chứ không phải 802.11r, còn tắt AES làm giảm bảo mật và không liên quan đến roaming."
+ },
+ "access-80": {
+  "e": "Phía thiết bị đã cấu hình xong dùng LACP mode `active` nhưng Port-channel1 vẫn down, nghĩa là phía neighbor chưa thương lượng LACP được. Cần chuyển cấu hình EtherChannel của neighbor sang mode `passive` (LACP): active + passive sẽ thương lượng thành công và port-channel lên. Mode `auto` là của PAgP nên không tương thích với LACP active; link đã thấy nhau qua CDP nên không phải lỗi shutdown hay IP."
+ },
+ "access-160": {
+  "e": "Root bridge là switch có Bridge ID tốt nhất: so priority trước, nếu bằng nhau thì so MAC address thấp hơn. Trong exhibit SW4 có priority 8192 (thuộc nhóm tốt nhất, bằng SW1) và MAC thấp hơn SW1, nên SW4 trở thành root bridge. SW2 và SW3 có priority 16384 và 32768 nên bị loại ngay ở bước so priority."
+ },
+ "access-181": {
+  "e": "Trunk là kết nối giữa các switch cho phép traffic của nhiều VLAN cùng đi qua một link (dùng 802.1Q tag), giúp traffic lưu thông giữa các switch trong mạng lớn. Access port chỉ mang một VLAN nên không dùng để nối switch với switch. LAG/EtherChannel là kỹ thuật gộp nhiều link vật lý, còn khái niệm kết nối switch với switch để chuyển traffic các VLAN ở đây là trunk."
+ },
+ "ipconn-138": {
+  "e": "Router chọn route theo longest prefix match. 192.168.2.86 khớp dài nhất với 192.168.2.80/29 (dải .80–.87), và 10.20.1.50 khớp dài nhất với 10.20.1.32/27 (dải .32–.63). Theo sơ đồ, cả hai mạng này đều nằm sau R4 (SW4), mà Gi0/0 của R4 có địa chỉ .2 trên mạng 172.16.1.0/29. Vì vậy next hop đúng để tới cả hai địa chỉ là 172.16.1.2."
+ },
+ "ipsvc-10": {
+  "e": "Syslog severity đi từ 0 (emergency) đến 7 (debug), và khi đặt một mức thì thiết bị gửi log của mức đó cùng mọi mức nghiêm trọng hơn. Informational là mức 6, nên trong các lựa chọn chỉ có debug (7) là bao gồm được informational syslog. Alert (1), critical (2) và notice (5) đều dừng trước mức 6 nên không nhận được informational."
+ },
+ "ipsvc-43": {
+  "e": "SNMPv2 bổ sung hai thao tác mới so với SNMPv1 là GetBulk và Inform. GetBulk cho phép lấy một lượng lớn dữ liệu (nhiều OID) chỉ trong một request thay vì gọi GetNext nhiều lần, còn Inform là notification có xác nhận (acknowledged). Get, GetNext và Set đã có từ SNMPv1 nên không phải tính năng mới của SNMPv2."
+ },
+ "ipsvc-61": {
+  "e": "Client gửi DHCPDISCOVER dạng broadcast để tìm DHCP server, và mọi server trong broadcast domain, kể cả server lạ (spurious/rogue), đều có thể phản hồi. Vì vậy dùng DHCPDISCOVER để thăm dò mạng là cách xác định các DHCP server giả mạo. DHCPREQUEST và DHCPACK chỉ diễn ra với server đã được chọn nên không giúp phát hiện server khác."
+ },
+ "sec-18": {
+  "e": "DHCP snooping có tính năng rate-limit các gói DHCP trên cổng untrusted (`ip dhcp snooping limit rate`), giúp chống DHCP starvation, đồng thời chặn DHCP server giả bằng trusted/untrusted port. Nghe multicast để forward là IGMP snooping, truyền thông tin VLAN giữa switch là VTP, còn DDoS mitigation không phải chức năng của DHCP snooping."
+ },
+ "sec-57": {
+  "e": "Yêu cầu là bảo vệ console bằng username/password cục bộ, không phụ thuộc RADIUS vì RADIUS đã gặp sự cố. Cấu hình đúng tạo user cục bộ bằng `username ... secret ...` rồi áp dụng xác thực cho `line con 0` (`login authentication default`) để console dùng database cục bộ. Các phương án khác lấy RADIUS làm phương thức chính hoặc dùng `no login`, nên console không được bảo vệ bằng tài khoản cục bộ."
+ },
+ "sec-71": {
+  "e": "AES (dùng trong CCMP) là cipher mã hóa bắt buộc của chuẩn WPA2; WPA đời đầu dùng TKIP dựa trên RC4, còn WEP dùng RC4. SHA là hàm băm chứ không phải cipher mã hóa, và AES256 không phải tên cipher chuẩn của WPA2."
+ },
+ "auto-9": {
+  "e": "Automation trong môi trường SDN mang lại hai cải tiến: trí tuệ nhân tạo (AI) giúp nhận diện và ngăn ngừa các lỗi thiết kế tiềm ẩn, và các API độc quyền của Cisco cho phép tận dụng, tích hợp nhiều công cụ quản lý mạng. Đây là các lợi ích đặc trưng của nền tảng SDN như Cisco DNA Center."
+ },
+ "auto-55": {
+  "e": "Toàn bộ dữ liệu nằm trong một cặp `{ }` nên có 1 object. Object này có 3 key: Test_Questions, Test__Exam_Level và Test_Response. Mỗi key mang giá trị là một JSON list `[ ]`, nên có 3 JSON list values. Đáp án đúng: one object, three keys, three JSON list values."
+ },
+ "auto-79": {
+  "e": "JSON mở object bằng `{` ở dòng đầu nhưng không có `}` để đóng, nên để thực thi được cần thêm curly brace `}` ở cuối. Dấu `[` của array đã có, chuỗi \"Cisco Devices\" đã nằm trong dấu nháy kép, còn dấu `!` không thuộc cú pháp JSON."
+ },
+ "auto-94": {
+  "e": "Khi ứng dụng làm việc với nội dung định dạng JSON, request REST phải có header `Content-Type: application/json` để báo cho server biết kiểu dữ liệu (media type) của body là JSON. `Accept-Encoding` dùng cho kiểu nén (gzip...), `Accept-Language` dùng cho ngôn ngữ, nên không nhận giá trị application/json."
+ },
+ "access-106": {
+  "e": "Muốn switch chỉ phản hồi LACP mà không chủ động khởi tạo thì dùng LACP mode passive: `channel-group 1 mode passive`. Desirable và auto thuộc PAgP (không phải LACP), còn `on` là EtherChannel tĩnh, không gửi hay phản hồi gói đàm phán nào."
+ },
+ "sec-11": {
+  "e": "Service-port của WLC là cổng quản lý out-of-band, cho phép truy cập quản trị bằng Telnet và SSH. RADIUS và TACACS+ là giao thức AAA, SCP là giao thức truyền file, không phải giao thức truy cập quản lý chạy trên service-port."
+ },
+ "sec-16": {
+  "e": "Telnet và HTTP truyền dữ liệu dạng clear-text nên cần tắt trên WLC để tăng bảo mật cho kết nối quản lý; thay vào đó dùng SSH và HTTPS (có mã hóa). SSH và HTTPS là giao thức an toàn nên giữ bật, còn TFTP là giao thức truyền file chứ không phải kết nối quản lý."
+ },
+ "sec-46": {
+  "e": "Hai thực hành bảo mật được khuyến nghị: đặt thiết bị mạng ở nơi an toàn (physical security) và tắt các port, interface, service không dùng để giảm bề mặt tấn công. Server email và file nội bộ không đặt trong DMZ (DMZ dành cho dịch vụ public), còn backup ra USB và keychain xác thực không phải khuyến nghị nền tảng."
+ },
+ "sec-74": {
+  "e": "Trên port nối IP phone, MAC tĩnh cho điện thoại phải gắn vào voice VLAN bằng từ khóa `vlan voice`: `switchport port-security mac-address abcd.abcd.abcd vlan voice`. Không ghi VLAN thì MAC được gán vào access VLAN, còn `vlan 4` hay `sticky` không phải cách gán MAC cho voice VLAN."
+ },
+ "sec-77": {
+  "e": "802.1X và RADIUS là hai giao thức dùng để xác thực trên access point: 802.1X cung cấp port-based authentication cho client, còn RADIUS server thực hiện xác thực và gửi thuộc tính cấu hình cho AP. 802.1Q là VLAN tagging, Kerberos không dùng trong WLAN, còn TACACS+ dùng cho quản trị thiết bị (device administration)."
+ },
+ "auto-5": {
+  "e": "SDN controller điều phối các virtual tenant network (VTN) và quản lý topology mạng nhờ cái nhìn tập trung toàn mạng. Layer 2 forwarding là việc của data plane trên từng thiết bị; tracking host và chống DDoS không phải chức năng của SDN controller."
+ },
+ "auto-25": {
+  "e": "Data plane chịu trách nhiệm chuyển tiếp (forward) traffic tới next hop. Xây dựng routing table từ routing protocol là việc của control plane, còn cung cấp CLI access là management plane."
+ },
+ "auto-33": {
+  "e": "Trong SDN, control plane được tách khỏi thiết bị và tập trung vào controller, nên chức năng ra quyết định định tuyến (makes a routing decision) do controller đảm nhận. Cung cấp truy cập từ xa và loại bỏ gói do filtering vẫn diễn ra trên từng node mạng."
+ },
+ "auto-76": {
+  "e": "Lý do chính để triển khai giải pháp quản lý mạng tự động là giảm chi phí vận hành (operational costs), nhờ giảm thao tác thủ công và lỗi cấu hình. Cấu hình box-by-box chính là cách làm thủ công mà automation thay thế, còn password policy đơn giản không phải mục tiêu của automation."
+ }
+}

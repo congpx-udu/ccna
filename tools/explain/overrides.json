@@ -82,5 +82,71 @@
  },
  "auto-76": {
   "e": "Lý do chính để triển khai giải pháp quản lý mạng tự động là giảm chi phí vận hành (operational costs), nhờ giảm thao tác thủ công và lỗi cấu hình. Cấu hình box-by-box chính là cách làm thủ công mà automation thay thế, còn password policy đơn giản không phải mục tiêu của automation."
+ },
+ "fund-b1": {
+  "e": "NAT overload (PAT) cho nhiều địa chỉ IP nội bộ dùng chung một địa chỉ public, phân biệt các phiên bằng số port, nên đây là quan hệ một-nhiều (one-to-many). Quan hệ một-một là static NAT, nhiều-nhiều là dynamic NAT dùng pool, và NAT overload không bị giới hạn chỉ chạy trên interface Gigabit."
+ },
+ "access-b1": {
+  "e": "Để router định tuyến cho VLAN 20 qua trunk (router-on-a-stick), cần tạo subinterface `interface ethernet0/0.20`, gắn tag VLAN bằng `encapsulation dot1q 20` rồi đặt `ip address 10.20.20.1 255.255.255.0`. Thiếu lệnh `encapsulation dot1q` thì subinterface không biết thuộc VLAN nào và không nhận IP được; còn cấu hình trực tiếp trên interface vật lý ethernet0/0 thì không tạo subinterface cho VLAN 20."
+ },
+ "ipconn-b1": {
+  "e": "Subnet /30 (255.255.255.252) có 4 địa chỉ, trong đó 2 địa chỉ giữa là usable. 209.165.201.2/30 thuộc subnet 209.165.201.0/30 (usable .1 và .2) nên hợp lệ. 10.2.1.3/30 là địa chỉ broadcast của subnet 10.2.1.0/30 nên không dùng được, còn các phương án dùng mask 255.255.255.248 là /29 chứ không phải /30."
+ },
+ "ipconn-b2": {
+  "e": "Với mask /28 (255.255.255.240), mỗi subnet có 16 địa chỉ: 192.168.16.143 thuộc subnet 192.168.16.128/28 (dải .128–.143), và .143 là địa chỉ cuối nên là broadcast. Không thể gán địa chỉ broadcast cho interface, vì vậy router báo lỗi `Bad mask /28`. Router vẫn hỗ trợ /28, và private hay không cũng không gây ra lỗi này."
+ },
+ "ipconn-b3": {
+  "e": "Thiết bị giao tiếp nội bộ không cần Internet dùng dải private IPv4 (RFC 1918): 10.0.0.0/8, 172.16.0.0/12 (172.16.0.0–172.31.255.255) và 192.168.0.0/16. 172.28.0.0/16 nằm trong 172.16.0.0/12 nên là private. 172.9.0.0/16, 192.0.0.0/8 và 209.165.201.0/24 đều không thuộc dải private."
+ },
+ "ipconn-b4": {
+  "e": "Tầng đông nhất có 29 users, mà /27 cho 30 host usable nên đủ cho mỗi tầng và ít lãng phí nhất. Bốn subnet /27 (4 x 32 = 128 địa chỉ) gộp lại vừa đúng một khối /25, nên summary là 192.168.0.0/25. /28 và /29 quá nhỏ cho 22–29 users, còn /25 cho mỗi tầng thì lãng phí."
+ },
+ "ipconn-b5": {
+  "e": "Để dùng không gian địa chỉ hiệu quả, SVI của mỗi tầng chọn mask nhỏ nhất phù hợp số users, ở đây là /27 (255.255.255.224) với 30 host usable cho mỗi subnet. Các mask /25, /23 hay /16 cấp quá nhiều địa chỉ cho một tầng và gây lãng phí."
+ },
+ "ipconn-b6": {
+  "e": "Link giữa R1 và R2 cần 2 địa chỉ và phải còn ít nhất 2 địa chỉ usable dự phòng, tức tối thiểu 4 host usable. /30 chỉ có 2 host usable nên không đủ dự phòng; /29 (255.255.255.248) có 6 host usable, dùng 2 còn dư 4, và là mask nhỏ nhất thỏa yêu cầu. Cặp 10.10.10.1 và 10.10.10.4 đều nằm trong subnet 10.10.10.0/29; /28 và /24 thì lãng phí địa chỉ."
+ },
+ "ipconn-b7": {
+  "e": "Prefix /26 có 64 địa chỉ, nên subnet x.x.1.0/26 chứa dải .0 đến .63 (usable .1–.62). Vì vậy .17 và .61 thuộc route này. .64 là đầu subnet kế tiếp (.64/26), còn .127 và .254 nằm ở các subnet khác."
+ },
+ "ipsvc-b1": {
+  "e": "Lệnh `show ip interface GigabitEthernet 0/0` hiển thị chi tiết cấu hình IP của interface, trong đó có dòng cho biết địa chỉ được cấp qua DHCP. `show interface` chủ yếu hiển thị trạng thái và thống kê Layer 1/2, còn `show ip interface dhcp` và `show ip interface GigabitEthernet 0/0 dhcp` không phải cú pháp hợp lệ."
+ },
+ "ipsvc-b2": {
+  "e": "Lệnh `ip address dhcp` trên interface khiến router hoạt động như DHCP client, xin địa chỉ IP từ DHCP server. `ip helper-address` dùng cho DHCP relay, `ip dhcp pool` dùng để cấu hình router làm DHCP server, còn `ip dhcp client` không phải lệnh để bật DHCP client trên interface."
+ },
+ "ipsvc-b3": {
+  "e": "Vai trò của DHCP là server cấp phát (lease) địa chỉ IP cho client một cách động, kèm thời hạn thuê. Client phải renew trước khi lease hết hạn; client không giữ pool địa chỉ (pool nằm trên server), và DHCP không giới hạn việc xin tối đa bốn DNS server."
+ },
+ "ipsvc-b4": {
+  "e": "DHCP server lưu danh sách các địa chỉ IP còn trống trong pool để cấp cho client, cùng các tham số như gateway và DNS. Danh sách tên và IP public là việc của DNS, username/password của domain là của directory server (như AD), còn danh sách MAC tĩnh không phải thông tin chính của DHCP server."
+ },
+ "ipsvc-b5": {
+  "e": "DHCP client là host được cấu hình để tự động xin địa chỉ IP (và các thông số mạng) từ DHCP server. Thiết bị cấp IP động là DHCP server, router gán IP tĩnh không phải DHCP client, còn xin domain name gắn với IP là việc liên quan đến DNS."
+ },
+ "ipsvc-b6": {
+  "e": "`ip helper-address` được cấu hình trên interface của router gần client nhất (interface nhận broadcast DHCP từ client). Router đó chuyển broadcast DHCPDISCOVER thành unicast gửi tới DHCP server ở subnet khác. Không cần cấu hình trên mọi router dọc đường, trên router gần server hay trên trunk của switch."
+ },
+ "ipsvc-b7": {
+  "e": "Khi dùng router làm DHCP server, thành phần bắt buộc là address pool (`ip dhcp pool`), nơi khai báo dải địa chỉ (`network`) và các tham số như `default-router`, `dns-server`. Relay agent information, database agent và manual bindings là các tính năng tùy chọn."
+ },
+ "ipsvc-b8": {
+  "e": "DHCP relay được cấu hình bằng `ip helper-address <IP DHCP server>` trên interface nhận broadcast từ client, giúp chuyển tiếp gói DHCP sang server ở subnet khác. `ip address dhcp` biến router thành DHCP client, `ip dhcp pool` dùng cho DHCP server, còn `ip dhcp relay` không phải lệnh cấu hình relay."
+ },
+ "ipsvc-b9": {
+  "e": "DHCP snooping lưu thông tin trong DHCP snooping binding database, gồm MAC, IP được cấp, lease time, VLAN và port của client. Bảng này còn được Dynamic ARP Inspection và IP Source Guard sử dụng. CAM/MAC address table chỉ chứa MAC và port, còn VLAN database chứa thông tin VLAN."
+ },
+ "ipsvc-b10": {
+  "e": "Từ khóa `overload` (PAT) cho phép nhiều host inside dùng chung một địa chỉ IP outside, phân biệt các phiên bằng số port, ví dụ `ip nat inside source list 1 interface g0/1 overload`. `static` tạo ánh xạ một-một, `pool` khai báo dải địa chỉ cho dynamic NAT, còn `source` chỉ cho biết hướng dịch địa chỉ."
+ },
+ "ipsvc-b11": {
+  "e": "Mặc định HSRP không preempt: router có priority cao hơn khi khởi động lại sẽ không giành lại vai trò active. Lệnh `standby 10 preempt` cho phép router có priority cao hơn chiếm lại vai trò primary sau khi reload. Chỉ đặt `priority 150` thì chưa đủ, còn `version 1/2` không liên quan đến việc giành vai trò."
+ },
+ "ipsvc-b12": {
+  "e": "DNS phân giải tên thành địa chỉ IP, giúp ứng dụng truy cập tài nguyên bằng tên thay vì nhớ địa chỉ IP. DNS cũng cho phép một host name ánh xạ tới nhiều địa chỉ IP (ví dụ để phân tải). DNS không mã hóa traffic, không che giấu IP để tăng bảo mật và có cấu trúc phân cấp chứ không phải phẳng."
+ },
+ "ipsvc-b13": {
+  "e": "Với cấu hình mặc định (`ip domain-lookup` bật và chưa khai báo `ip name-server`), khi gõ một tên hoặc URL không phải lệnh trên CLI, router coi đó là hostname cần Telnet tới và gửi broadcast (255.255.255.255) để phân giải tên. Vì vậy CLI thường bị treo một lúc với thông báo \"Translating...\"; router không ping URL, không hỏi người dùng nhập IP và không thử lại mãi."
  }
 }

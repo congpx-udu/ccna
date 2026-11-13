@@ -86,47 +86,82 @@ def parse_section(path, sec_id):
     doc = docx.Document(path)
     cache = {}
     questions, cur = [], None
+    n_extra = 0
 
     def flush():
         if cur:
             questions.append(cur)
+
+    def new_q(num, extra=False):
+        nonlocal cur
+        flush()
+        cur = {"num": num, "blocks": [], "answerRaw": None, "extra": extra}
+
+    def ensure_open():
+        """Content after an answered question with no "Question x.y" heading starts a new
+        (supplementary) question - e.g. the numbered "Bổ sung" items at the end of each file."""
+        nonlocal n_extra
+        if cur is not None and cur["answerRaw"] is not None:
+            n_extra += 1
+            new_q(f"BS-{n_extra}", extra=True)
+
+    def add_images(rids):
+        for rid in rids:
+            src = save_image(doc, rid, cache)
+            if src:
+                ensure_open()
+                cur["blocks"].append({"img": src})
+
+    def add_text(text):
+        buf = []
+
+        def emit():
+            if buf and cur is not None and "\n".join(buf).strip():
+                cur["blocks"].append({"text": "\n".join(buf).strip()})
+            buf.clear()
+
+        for line in text.split("\n"):
+            ls = line.strip()
+            answered = cur["answerRaw"] is not None
+            # Separators between questions ("Bổ sung" header, dashed rules, a bare "8.") are not content;
+            # dashed lines *inside* a question are part of show-command output and are kept.
+            if ls.lower() == "bổ sung" or (answered and re.fullmatch(r"-{3,}|\d+[.)]?", ls)):
+                emit()
+                continue
+            am = ANS_RE.match(ls) if ls else None
+            if am and not answered:
+                emit()
+                cur["answerRaw"] = am.group(2).strip()
+                continue
+            if ls and answered:
+                ensure_open()
+                line = re.sub(r"^\s*\d+[.)]\s+", "", line)  # drop "1." numbering of supplementary items
+            buf.append(line)
+        emit()
 
     for kind, payload, rids in iter_blocks(doc):
         if kind == "p":
             text = payload.replace("\xa0", " ").strip()
             m = Q_RE.match(text) if text else None
             if m and len(text) < 40:
-                flush()
-                cur = {"num": m.group(1), "blocks": [], "answerRaw": None}
+                new_q(m.group(1))
                 continue
             if cur is None:
                 continue
-            for rid in rids:
-                src = save_image(doc, rid, cache)
-                if src:
-                    cur["blocks"].append({"img": src})
-            if not text:
-                continue
-            am = ANS_RE.match(text)
-            if am and cur["answerRaw"] is None:
-                cur["answerRaw"] = am.group(2).strip()
-                continue
-            if cur["answerRaw"] is not None:
-                cur.setdefault("explain", []).append(text)
-            else:
-                cur["blocks"].append({"text": text})
+            add_images(rids)
+            if text:
+                add_text(text)
         else:
             if cur is None:
                 continue
-            for rid in rids:
-                src = save_image(doc, rid, cache)
-                if src:
-                    cur["blocks"].append({"img": src})
+            add_images(rids)
+            ensure_open()
             cur["blocks"].append({"table": payload})
     flush()
 
     out = []
-    for i, q in enumerate(questions):
+    n_head = n_bs = 0
+    for q in questions:
         stem, options, media = [], [], []
         for b in q["blocks"]:
             if "text" in b:
@@ -145,8 +180,16 @@ def parse_section(path, sec_id):
         keys = re.findall(r"\b([A-H])\b", ans_raw.upper()) if re.fullmatch(r"[A-H ,;&and]+", ans_raw.strip(), re.I) else []
         valid = {o["key"] for o in options}
         keys = [k for k in dict.fromkeys(keys) if k in valid]
+        # Headed questions keep ids sec-1..N (explanations and saved progress depend on them);
+        # supplementary ones get sec-b1.. so they never shift existing ids.
+        if q["extra"]:
+            n_bs += 1
+            qid = f"{sec_id}-b{n_bs}"
+        else:
+            n_head += 1
+            qid = f"{sec_id}-{n_head}"
         item = {
-            "id": f"{sec_id}-{i+1}",
+            "id": qid,
             "num": q["num"],
             "stem": stem + media,
             "options": options,

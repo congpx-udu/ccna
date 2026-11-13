@@ -181,6 +181,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const viSpan = (text, tag='span') => trOn && shouldTr(text) ? `<${tag} class="vi" data-tr="${esc(text.trim())}"></${tag}>` : '';
 const need = q => q.answer.length || 1;
+const qLabel = q => q.num.startsWith('BS-') ? 'Câu bổ sung ' + esc(q.num.slice(3)) : 'Question ' + esc(q.num);
 const fmtEx = t => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>');
 
 // ---------- home ----------
@@ -296,7 +297,7 @@ function renderQ(){
       <span>✔ ${correct}/${answered}</span>
     </div>
     <div class="card">
-      <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · Question ${esc(q.num)}</div>
+      <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · ${qLabel(q)}</div>
       <div class="stem">${stemHTML(q)}</div>
       <div class="hint">${multi ? `Chọn ${need(q)} đáp án` : 'Chọn 1 đáp án'}</div>
       <div class="opts">${order.map((k, idx) => {
@@ -437,7 +438,7 @@ function renderResults(){
     hits.slice(0, search.limit).map(q => {
       const ex = EXPLAIN[q.id];
       return `<div class="card res">
-        <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · Question ${esc(q.num)}</div>
+        <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · ${qLabel(q)}</div>
         <div class="stem">${hl(stemHTML(q), terms)}</div>
         <div class="opts">${q.options.map(o => {
           const txt = o.text.trim();

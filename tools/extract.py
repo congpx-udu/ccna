@@ -22,6 +22,7 @@ SECTIONS = [
 Q_RE = re.compile(r"^\s*Question\s*[:#]?\s*([\w.\-]+)", re.I)
 ANS_RE = re.compile(r"^\s*(Answer|Correct Answer)s?\s*[:：]?\s*(.*)$", re.I | re.S)
 OPT_RE = re.compile(r"^\s*([A-H])[.)](?:\s+(.*))?$", re.S)
+OPT_LOOSE_RE = re.compile(r"^\s*([A-H])[.)]([A-Za-z(\"'].*)$", re.S)
 
 
 def para_text(el):
@@ -167,6 +168,13 @@ def parse_section(path, sec_id):
             if "text" in b:
                 for line in b["text"].split("\n"):
                     om = OPT_RE.match(line)
+                    if not om:
+                        # Source sometimes omits the space ("D.WFQ"); accept that only for the next
+                        # expected letter so things like "A.1" inside text are not split.
+                        lm = OPT_LOOSE_RE.match(line)
+                        expected = chr(ord(options[-1]["key"]) + 1) if options else ("A" if stem else None)
+                        if lm and lm.group(1) == expected:
+                            om = lm
                     if om:
                         options.append({"key": om.group(1), "text": (om.group(2) or "").strip()})
                     elif line.strip():
@@ -176,7 +184,21 @@ def parse_section(path, sec_id):
                             stem.append({"text": line})
             else:
                 stem.append(b) if not options else media.append(b)
-        ans_raw = q["answerRaw"] or ""
+        # Source quirk: option "A." glued to the end of the last stem line ("... trust A. DHCP client").
+        if options and options[0]["key"] == "B" and stem and "text" in stem[-1]:
+            gm = re.match(r"^(.*\S)\s+A[.)]\s+(.+)$", stem[-1]["text"], re.S)
+            if gm:
+                stem[-1] = {"text": gm.group(1)}
+                options.insert(0, {"key": "A", "text": gm.group(2).strip()})
+        # Source quirk: real options followed by placeholder "Option A..D" duplicates.
+        seen, deduped = set(), []
+        for o in options:
+            if o["key"] in seen and re.fullmatch(r"Option [A-H]", o["text"].strip(), re.I):
+                continue
+            seen.add(o["key"])
+            deduped.append(o)
+        options = deduped
+        ans_raw = re.sub(r"\(\s*\?\s*\)", "", q["answerRaw"] or "").strip()  # "B (?)" -> follow the key: B
         keys = re.findall(r"\b([A-H])\b", ans_raw.upper()) if re.fullmatch(r"[A-H ,;&and]+", ans_raw.strip(), re.I) else []
         valid = {o["key"] for o in options}
         keys = [k for k in dict.fromkeys(keys) if k in valid]

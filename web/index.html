@@ -83,6 +83,14 @@ pre,.tbl td{font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
 details.exd{margin-top:12px}
 details.exd summary{cursor:pointer;color:var(--accent);font-size:14px}
 code{font:13px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 4px;border-radius:4px}
+.sbox{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;outline:none}
+.sbox:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.res{margin-top:12px}
+.res .ans{margin-top:10px;font-weight:600;color:var(--ok)}
+mark{background:#fde68a;color:inherit;border-radius:2px;padding:0 1px}
+:root[data-theme=dark] mark{background:#665214}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) mark{background:#665214}}
+@media (max-width:560px){header h1{font-size:16px}header{gap:6px}header .btn{padding:6px 9px;font-size:14px}}
 .big{font-size:40px;font-weight:700;margin:4px 0}
 .muted{color:var(--muted)}
 .kbd{font-size:12px;color:var(--muted);margin-top:22px}
@@ -97,6 +105,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
   <header>
     <h1 id="home">📘 Ôn tập CCNA</h1>
     <span class="sp"></span>
+    <button class="btn" id="searchBtn" title="Tìm câu hỏi (phím /)">🔍 Tìm câu</button>
     <button class="btn" id="trBtn" title="Dịch sang tiếng Việt (phím T)">🌐 Dịch: Tắt</button>
     <button class="btn" id="themeBtn" title="Đổi giao diện sáng/tối">◐</button>
   </header>
@@ -165,7 +174,7 @@ function fillTranslations(root){
 }
 const trBtnSync = () => { $('#trBtn').textContent = '🌐 Dịch: ' + (trOn ? 'Bật' : 'Tắt'); $('#trBtn').classList.toggle('on', trOn); };
 trBtnSync();
-$('#trBtn').onclick = () => { trOn = !trOn; store.set('tr', trOn); trBtnSync(); if (session) renderQ(); };
+$('#trBtn').onclick = () => { trOn = !trOn; store.set('tr', trOn); trBtnSync(); if (session) renderQ(); else if (search) renderResults(); };
 
 // ---------- helpers ----------
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -185,7 +194,7 @@ function secStats(sec){
 }
 
 function renderHome(){
-  session = null;
+  session = null; search = null;
   const wrongIds = ALL.filter(q => stats[q.id] && !stats[q.id].last).map(q => q.id);
   const done = ALL.filter(q => stats[q.id]).length;
   app.innerHTML = `
@@ -220,7 +229,7 @@ function renderHome(){
         <small>${st.total} câu · đúng ${st.ok} · sai ${st.bad}</small>
         <div class="bar"><i style="width:${st.ok / st.total * 100}%;background:var(--ok)"></i><i style="width:${st.bad / st.total * 100}%;background:var(--bad)"></i></div>
       </button>`; }).join('')}</div>
-    <p class="kbd">Phím tắt khi làm bài: <kbd>A</kbd>–<kbd>H</kbd> chọn đáp án · <kbd>Enter</kbd> kiểm tra / câu tiếp · <kbd>←</kbd> <kbd>→</kbd> chuyển câu · <kbd>T</kbd> bật/tắt dịch</p>`;
+    <p class="kbd">Phím tắt khi làm bài: <kbd>A</kbd>–<kbd>H</kbd> chọn đáp án · <kbd>Enter</kbd> kiểm tra / câu tiếp · <kbd>←</kbd> <kbd>→</kbd> chuyển câu · <kbd>T</kbd> bật/tắt dịch · <kbd>/</kbd> tìm câu hỏi</p>`;
 
   const saveOpts = () => store.set('homeOpts', homeOpts);
   $('#secChips').onclick = e => { const s = e.target.dataset.s; if (!s) return;
@@ -281,7 +290,7 @@ function renderQ(){
   app.innerHTML = `
     <div class="prog"><i style="width:${(S.i + 1) / S.list.length * 100}%"></i></div>
     <div class="qhead">
-      <button class="btn" id="back">← Trang chủ</button>
+      <button class="btn" id="back">← ${search ? 'Kết quả tìm' : 'Trang chủ'}</button>
       <span>${esc(S.title)} · <b>Câu ${S.i + 1}/${S.list.length}</b></span>
       <span class="sp"></span>
       <span>✔ ${correct}/${answered}</span>
@@ -315,7 +324,7 @@ function renderQ(){
       return `<button class="${c} ${i === S.i ? 'cur' : ''}" data-i="${i}">${i + 1}</button>`; }).join('')}</div>`;
 
   fillTranslations(app);
-  $('#back').onclick = renderHome;
+  $('#back').onclick = () => search ? renderSearch() : renderHome();
   $('#prev').onclick = () => go(-1);
   const n = $('#next'); if (n) n.onclick = () => go(1);
   const f = $('#finish'); if (f) f.onclick = renderResult;
@@ -370,12 +379,88 @@ function renderResult(){
   const r = $('#redo'); if (r) r.onclick = () => start(shuffle(wrong), S.title + ' · câu sai', true);
   $('#again').onclick = () => start(S.list, S.title, S.shufOpt);
   $('#homeB').onclick = renderHome;
+  if (search) { $('#homeB').textContent = 'Kết quả tìm'; $('#homeB').onclick = renderSearch; }
 }
+
+// ---------- search ----------
+let search = null;   // {q, limit} while the search view (or a quiz opened from it) is active
+const norm = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/\s+/g, ' ');
+const SEARCH_IDX = ALL.map(q => ({
+  q,
+  own: norm(q.stem.map(b => b.text || (b.table ? b.table.flat().join(' ') : '')).join(' ') + ' ' + q.options.map(o => o.text).join(' ')),
+  ex: norm((EXPLAIN[q.id] || {}).e || '')
+}));
+const isNumQuery = raw => /^\s*(question|cau|câu)?\s*\d+\.\d+\s*$/i.test(raw);
+
+function runSearch(raw){
+  if (!raw.trim()) return [];
+  if (isNumQuery(raw)) { const n = raw.match(/\d+\.\d+/)[0]; return ALL.filter(q => q.num === n); }
+  const terms = norm(raw.trim()).split(' ').filter(Boolean);
+  const own = [], viaEx = [];
+  for (const it of SEARCH_IDX) {
+    if (terms.every(t => it.own.includes(t))) own.push(it.q);                              // in question/options
+    else if (terms.every(t => it.own.includes(t) || it.ex.includes(t))) viaEx.push(it.q); // needs the explanation
+  }
+  return own.concat(viaEx);
+}
+
+// Highlight search terms in already-escaped HTML, touching text only (never inside tags).
+function hl(html, terms){
+  if (!terms.length) return html;
+  const re = new RegExp('(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
+  return html.split(/(<[^>]+>)/).map(part => part.startsWith('<') ? part : part.replace(re, '<mark>$1</mark>')).join('');
+}
+
+function renderSearch(){
+  session = null;
+  search = search || {q: '', limit: 30};
+  app.innerHTML = `
+    <div class="qhead"><button class="btn" id="back">← Trang chủ</button><span>Tìm câu hỏi</span></div>
+    <input class="sbox" id="sq" type="search" placeholder="Từ khoá (vd: root bridge, ip nat inside) hoặc số câu (vd: 5.23)" value="${esc(search.q)}" autocomplete="off">
+    <div id="results"></div>`;
+  $('#back').onclick = renderHome;
+  const box = $('#sq');
+  let t;
+  box.oninput = () => { clearTimeout(t); t = setTimeout(() => { search.q = box.value; search.limit = 30; renderResults(); }, 150); };
+  box.focus(); box.setSelectionRange(box.value.length, box.value.length);
+  renderResults();
+}
+
+function renderResults(){
+  const el = $('#results'); if (!el) return;
+  const raw = search.q;
+  if (!raw.trim()) { el.innerHTML = `<p class="muted" style="margin-top:14px">Tìm theo nội dung câu hỏi, đáp án hoặc lời giải. Nhiều từ thì tìm câu chứa đủ tất cả các từ. Gõ số câu như <b>8.45</b> để tìm theo số.</p>`; return; }
+  const hits = runSearch(raw);
+  if (!hits.length) { el.innerHTML = `<p class="muted" style="margin-top:14px">Không tìm thấy câu nào.</p>`; return; }
+  const terms = isNumQuery(raw) ? [] : raw.trim().split(/\s+/).filter(x => x.length > 1);
+  el.innerHTML = `<p class="muted" style="margin-top:14px">Tìm thấy ${hits.length} câu${hits.length > search.limit ? `, đang hiện ${search.limit}` : ''}.</p>` +
+    hits.slice(0, search.limit).map(q => {
+      const ex = EXPLAIN[q.id];
+      return `<div class="card res">
+        <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(q.secTitle)} · Question ${esc(q.num)}</div>
+        <div class="stem">${hl(stemHTML(q), terms)}</div>
+        <div class="opts">${q.options.map(o => {
+          const txt = o.text.trim();
+          const shortTerm = txt.split(/\s+/).length <= 2;
+          return `<div class="opt ${q.answer.includes(o.key) ? 'ok' : ''} ${isCode(txt) ? 'code' : ''}"><span class="k">${o.key}</span><span class="t">${hl(esc(txt), terms)}${shortTerm ? '' : viSpan(txt)}</span></div>`;
+        }).join('')}</div>
+        <div class="ans">✓ Đáp án: ${q.answer.length ? q.answer.join(', ') : esc(q.answerText || '?')}</div>
+        ${ex ? `<div class="explain"><b>💡 Giải thích</b>${fmtEx(ex.e)}</div>` : ''}
+        <div class="nav"><span class="sp"></span><button class="btn" data-try="${q.id}">Làm thử câu này →</button></div>
+      </div>`;
+    }).join('') +
+    (hits.length > search.limit ? `<div style="text-align:center;margin-top:14px"><button class="btn" id="more">Hiện thêm</button></div>` : '');
+  fillTranslations(el);
+  const m = $('#more'); if (m) m.onclick = () => { search.limit += 30; renderResults(); };
+  el.querySelectorAll('[data-try]').forEach(b => b.onclick = () => { start([BY_ID[b.dataset.try]], 'Làm thử', homeOpts.shufOpt); });
+}
+$('#searchBtn').onclick = renderSearch;
 
 // ---------- keyboard ----------
 document.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target.tagName === 'INPUT') return;
   if (e.key === 't' || e.key === 'T') { $('#trBtn').click(); return; }
+  if (e.key === '/') { e.preventDefault(); renderSearch(); return; }
   if (!session || !app.querySelector('.opts')) return;
   const q = session.list[session.i];
   const k = e.key.toUpperCase();
